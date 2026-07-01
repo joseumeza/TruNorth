@@ -1,0 +1,119 @@
+name: product.md sync check
+
+# Reminds contributors (via a PR comment + a warning annotation) when a PR changes
+# implementation under TruNorthProject/ but does NOT update product.md.
+#
+# Default behavior: NON-BLOCKING (warns only). To make it a hard requirement, flip
+# ENFORCE to "true" below (or set a repo variable PRODUCT_MD_ENFORCE=true).
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - 'TruNorthProject/**'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+env:
+  ENFORCE: ${{ vars.PRODUCT_MD_ENFORCE || 'false' }}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect product.md drift
+        id: drift
+        run: |
+          BASE="${{ github.event.pull_request.base.sha }}"
+          HEAD="${{ github.event.pull_request.head.sha }}"
+          FILES="$(git diff --name-only "$BASE" "$HEAD")"
+
+          # Implementation changes worth documenting (ignore pure scaffolding placeholders).
+          IMPL_CHANGED="$(echo "$FILES" \
+            | grep -E '^TruNorthProject/' \
+            | grep -vE '(^|/)\.gitkeep$' \
+            || true)"
+
+          PRODUCT_CHANGED="$(echo "$FILES" | grep -E '^product\.md$' || true)"
+          CONTEXT_CHANGED="$(echo "$FILES" | grep -E '^TruNorthContextFiles/' || true)"
+
+          if [ -n "$IMPL_CHANGED" ] && [ -z "$PRODUCT_CHANGED" ] && [ -z "$CONTEXT_CHANGED" ]; then
+            echo "needs_update=true" >> "$GITHUB_OUTPUT"
+            {
+              echo "changed<<EOF"
+              echo "$IMPL_CHANGED"
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
+          else
+            echo "needs_update=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Comment on PR
+        if: steps.drift.outputs.needs_update == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const changed = `${{ steps.drift.outputs.changed }}`.trim();
+            const marker = '<!-- product-md-sync -->';
+            const body = [
+              marker,
+              '### 📝 `product.md` may be out of date',
+              '',
+              'This PR changes implementation under `TruNorthProject/` but does **not** update',
+              '`product.md` (or a linked file in `TruNorthContextFiles/`).',
+              '',
+              '`product.md` must always reflect what is actually implemented. Please update it —',
+              'status markers, method descriptions, and the folder tree — before merging.',
+              'See `CLAUDE.md` and `product.md` Section 0.',
+              '',
+              '<details><summary>Implementation files changed in this PR</summary>',
+              '',
+              '```',
+              changed,
+              '```',
+              '</details>',
+            ].join('\n');
+
+            const { owner, repo } = context.repo;
+            const issue_number = context.payload.pull_request.number;
+            const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number });
+            const existing = comments.find(c => c.body && c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }
+
+      - name: Resolve reminder when synced
+        if: steps.drift.outputs.needs_update == 'false'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const marker = '<!-- product-md-sync -->';
+            const { owner, repo } = context.repo;
+            const issue_number = context.payload.pull_request.number;
+            const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number });
+            const existing = comments.find(c => c.body && c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner, repo, comment_id: existing.id,
+                body: marker + '\n### ✅ `product.md` sync resolved\n\nThanks — implementation changes are matched by a `product.md` / `TruNorthContextFiles/` update.',
+              });
+            }
+
+      - name: Enforce (optional)
+        if: steps.drift.outputs.needs_update == 'true' && env.ENFORCE == 'true'
+        run: |
+          echo "::error::product.md was not updated for implementation changes under TruNorthProject/. Update product.md (or set PRODUCT_MD_ENFORCE=false to warn only)."
+          exit 1
+
+      - name: Warn (non-blocking)
+        if: steps.drift.outputs.needs_update == 'true' && env.ENFORCE != 'true'
+        run: echo "::warning::product.md may be out of date for this PR. See the PR comment."

@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+#
+# TruNorth pre-push reminder: warns (never blocks) if commits being pushed change
+# implementation under TruNorthProject/ without touching product.md.
+#
+# Enable once per clone:
+#   git config core.hooksPath .githooks
+#
+set -euo pipefail
+
+remote="${1:-origin}"
+# Determine the range of commits being pushed vs the remote's current tip.
+range=""
+while read -r local_ref local_sha remote_ref remote_sha; do
+  [ -z "${local_sha:-}" ] && continue
+  # Skip branch deletions (all-zero local sha).
+  case "$local_sha" in *[!0]*) : ;; *) continue ;; esac
+  if [ "${remote_sha:-}" = "" ] || [[ "$remote_sha" =~ ^0+$ ]]; then
+    range="$local_sha"            # new branch: inspect the pushed commit
+  else
+    range="${remote_sha}..${local_sha}"
+  fi
+done
+
+# Fallback if git provided nothing on stdin.
+[ -z "$range" ] && range="@{push}..HEAD" 2>/dev/null || true
+
+changed="$(git diff --name-only "$range" 2>/dev/null || true)"
+[ -z "$changed" ] && exit 0
+
+impl="$(echo "$changed" | grep -E '^TruNorthProject/' | grep -vE '(^|/)\.gitkeep$' || true)"
+docs="$(echo "$changed" | grep -E '^(product\.md|TruNorthContextFiles/)' || true)"
+
+if [ -n "$impl" ] && [ -z "$docs" ]; then
+  cat >&2 <<'MSG'
+
+  ⚠  Reminder: this push changes implementation under TruNorthProject/ but does
+     not update product.md.
+
+     product.md must reflect what is actually implemented. Please update it
+     (status markers, method descriptions, folder tree) — see CLAUDE.md.
+
+     This is only a reminder; the push will proceed.
+
+MSG
+fi
+
+exit 0
