@@ -1,2 +1,2 @@
-# TruNorth
-It's Game
+# DallasAITeam15
+Github Channel for Gaming platform
