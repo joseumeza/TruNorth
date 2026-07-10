@@ -39,7 +39,7 @@ const chapterIds = readdirSync(chaptersDir, { withFileTypes: true })
   .filter((d) => d.isDirectory())
   .map((d) => d.name);
 
-interface SceneDoc { id: string; chapterId: string; background: string; characters: { assetRef: string }[]; fx?: { assetRef: string }[]; collectibles: { assetRef: string }[]; triggers: { action: string; target: string }[]; decisionPoints: string[]; }
+interface SceneDoc { id: string; chapterId: string; movementTier: string; background: string; avatarStart?: [number, number]; tileMap?: string[]; characters: { assetRef: string }[]; fx?: { assetRef: string }[]; collectibles: { assetRef: string; position: [number, number] }[]; triggers: { id: string; action: string; target: string; bounds: [number, number, number, number] }[]; decisionPoints: string[]; }
 interface DpDoc { id: string; themeSensitivity: string; consequences: { band: string; sceneId: string }[]; emotionalArc: Record<string, unknown>; }
 interface ChapterDoc { chapterId: string; entrySceneId: string; nextChapterId: string | null; }
 
@@ -82,6 +82,40 @@ for (const scene of scenes.values()) {
   ];
   for (const ref of refs) {
     if (!knownRefs.has(ref)) fail(`scene ${scene.id}: assetRef "${ref}" not in assets-src/manifest.yaml`);
+  }
+}
+
+// ── Tile-map layout integrity (top-down rooms, 16×9 tiles of 120 px) ────────
+const TILE = 120;
+const walkableAt = (tileMap: string[], x: number, y: number): boolean => {
+  const row = tileMap[Math.floor(y / TILE)];
+  return row?.[Math.floor(x / TILE)] === '.';
+};
+for (const scene of scenes.values()) {
+  if (!scene.tileMap) {
+    fail(`scene ${scene.id}: missing tileMap (every room needs a collision map)`);
+    continue;
+  }
+  if (scene.avatarStart && !walkableAt(scene.tileMap, scene.avatarStart[0], scene.avatarStart[1])) {
+    fail(`scene ${scene.id}: avatarStart [${scene.avatarStart}] is on a blocked tile`);
+  }
+  // Tier B triggers fire by walking into them, so each must touch walkable floor.
+  if (scene.movementTier === 'B') {
+    for (const trigger of scene.triggers) {
+      const [bx, by, bw, bh] = trigger.bounds;
+      let reachable = false;
+      for (let y = by; y < by + bh && !reachable; y += TILE / 2) {
+        for (let x = bx; x < bx + bw && !reachable; x += TILE / 2) {
+          if (walkableAt(scene.tileMap, x, y)) reachable = true;
+        }
+      }
+      if (!reachable) fail(`scene ${scene.id}: trigger "${trigger.id}" overlaps no walkable tile`);
+    }
+    for (const collectible of scene.collectibles) {
+      if (!walkableAt(scene.tileMap, collectible.position[0], collectible.position[1])) {
+        fail(`scene ${scene.id}: collectible at [${collectible.position}] is on a blocked tile`);
+      }
+    }
   }
 }
 

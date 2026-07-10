@@ -1,20 +1,70 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <!-- 3/4 top-down ladder-base room for W4; aligns to the 16x9 grid of 120px
+       collision tiles (hedge border, wide trunk at cols 6-9 rows 1-2 with the
+       climbing ladder on its south face at cols 7-8). -->
   <defs>
-    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#8fd0ff"/><stop offset="1" stop-color="#d9f4e4"/>
+    <pattern id="grassT" width="240" height="240" patternUnits="userSpaceOnUse">
+      <rect width="240" height="240" fill="#7fbf74"/>
+      <rect width="120" height="120" fill="#77b76c"/>
+      <rect x="120" y="120" width="120" height="120" fill="#77b76c"/>
+      <path d="M 50 190 q 6 -18 12 0 M 180 70 q 6 -18 12 0" stroke="#619e58" stroke-width="5" fill="none" stroke-linecap="round"/>
+    </pattern>
+    <linearGradient id="hedgeT" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4a9150"/><stop offset="1" stop-color="#3d7e3c"/>
     </linearGradient>
   </defs>
-  <rect width="1920" height="1080" fill="url(#sky)"/>
-  <circle cx="640" cy="120" r="220" fill="#57a84b" opacity="0.9"/>
-  <circle cx="1500" cy="150" r="260" fill="#4f9e45" opacity="0.9"/>
-  <rect x="820" y="0" width="120" height="1080" rx="26" fill="#7a5230"/>
-  <rect x="1160" y="0" width="120" height="1080" rx="26" fill="#7a5230"/>
-  <g fill="#c98d4b">
-    <rect x="800" y="160" width="500" height="46" rx="20"/>
-    <rect x="800" y="380" width="500" height="46" rx="20"/>
-    <rect x="800" y="600" width="500" height="46" rx="20"/>
-    <rect x="800" y="820" width="500" height="46" rx="20"/>
+
+  <!-- floor -->
+  <rect width="1920" height="1080" fill="url(#grassT)"/>
+
+  <!-- hedge walls, no gaps -->
+  <g>
+    <rect x="0" y="0" width="1920" height="96" fill="url(#hedgeT)"/>
+    <rect x="0" y="96" width="1920" height="24" fill="#31642d"/>
+    <rect x="0" y="960" width="1920" height="96" fill="url(#hedgeT)"/>
+    <rect x="0" y="1056" width="1920" height="24" fill="#31642d"/>
+    <rect x="0" y="0" width="120" height="1080" fill="url(#hedgeT)"/>
+    <rect x="96" y="0" width="24" height="1080" fill="#31642d"/>
+    <rect x="1800" y="0" width="120" height="1080" fill="url(#hedgeT)"/>
+    <rect x="1776" y="0" width="24" height="1080" fill="#31642d"/>
+    <g fill="#57a457">
+      <circle cx="360" cy="48" r="38"/><circle cx="1440" cy="52" r="34"/>
+      <circle cx="600" cy="1008" r="38"/><circle cx="1320" cy="1012" r="34"/>
+      <circle cx="58" cy="420" r="34"/><circle cx="1862" cy="640" r="34"/>
+    </g>
   </g>
-  <ellipse cx="960" cy="1060" rx="900" ry="80" fill="#6cbf4e"/>
-  <ellipse cx="330" cy="300" rx="130" ry="45" fill="#ffffff" opacity="0.85"/>
+
+  <!-- treehouse platform above the north wall, over the wide trunk -->
+  <g>
+    <rect x="690" y="0" width="540" height="140" rx="18" fill="#b5804e"/>
+    <rect x="672" y="118" width="576" height="28" rx="12" fill="#8a6a4a"/>
+    <rect x="840" y="26" width="240" height="92" rx="12" fill="#6e563c"/>
+    <circle cx="960" cy="72" r="26" fill="#ffe27a"/>
+  </g>
+
+  <!-- wide trunk on tiles (6-9, 1-2), front face at the bottom -->
+  <g>
+    <ellipse cx="960" cy="352" rx="260" ry="30" fill="#000" opacity="0.10"/>
+    <rect x="732" y="124" width="456" height="236" rx="30" fill="#7a5230"/>
+    <rect x="732" y="318" width="456" height="42" rx="16" fill="#64411f"/>
+    <path d="M 800 160 q 20 60 0 150 M 1120 160 q -20 60 0 150" stroke="#6b4526" stroke-width="10" fill="none"/>
+  </g>
+
+  <!-- the climbing ladder, centered on cols 7-8, reaching the platform -->
+  <g>
+    <line x1="912" y1="132" x2="912" y2="420" stroke="#e8cf9a" stroke-width="14" stroke-linecap="round"/>
+    <line x1="1008" y1="132" x2="1008" y2="420" stroke="#e8cf9a" stroke-width="14" stroke-linecap="round"/>
+    <g stroke="#d9b978" stroke-width="12" stroke-linecap="round">
+      <line x1="912" y1="170" x2="1008" y2="170"/>
+      <line x1="912" y1="230" x2="1008" y2="230"/>
+      <line x1="912" y1="290" x2="1008" y2="290"/>
+      <line x1="912" y1="350" x2="1008" y2="350"/>
+      <line x1="912" y1="404" x2="1008" y2="404"/>
+    </g>
+  </g>
+
+  <!-- celebratory sparkles near the ladder base -->
+  <g fill="#ffd66b">
+    <circle cx="780" cy="500" r="8"/><circle cx="1150" cy="470" r="8"/><circle cx="1240" cy="560" r="6"/>
+  </g>
 </svg>

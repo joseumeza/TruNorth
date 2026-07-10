@@ -1,34 +1,80 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <!-- 3/4 top-down clearing room; aligns to the 16x9 grid of 120px collision
+       tiles in w1/w2/w3a/w3b (hedge border, treehouse trunk at cols 7-8
+       rows 1-2, boulders at (3,5) and (11,5), east path gap at col 15 row 4). -->
   <defs>
-    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#a5dcff"/><stop offset="1" stop-color="#eefaf0"/>
-    </linearGradient>
-    <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#96d468"/><stop offset="1" stop-color="#5fb548"/>
+    <pattern id="grassC" width="240" height="240" patternUnits="userSpaceOnUse">
+      <rect width="240" height="240" fill="#84c46c"/>
+      <rect width="120" height="120" fill="#7cbc64"/>
+      <rect x="120" y="120" width="120" height="120" fill="#7cbc64"/>
+      <path d="M 60 180 q 6 -18 12 0 M 190 60 q 6 -18 12 0" stroke="#66a651" stroke-width="5" fill="none" stroke-linecap="round"/>
+    </pattern>
+    <linearGradient id="hedgeC" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4f9a54"/><stop offset="1" stop-color="#42873f"/>
     </linearGradient>
   </defs>
-  <rect width="1920" height="1080" fill="url(#sky)"/>
-  <circle cx="300" cy="170" r="80" fill="#ffe27a"/>
-  <ellipse cx="1200" cy="220" rx="160" ry="55" fill="#ffffff" opacity="0.85"/>
-  <ellipse cx="960" cy="1030" rx="1400" ry="400" fill="url(#grass)"/>
-  <rect x="1180" y="200" width="90" height="620" rx="24" fill="#7a5230"/>
-  <circle cx="1225" cy="200" r="230" fill="#4f9e45"/>
-  <circle cx="1060" cy="290" r="130" fill="#5cae51"/>
-  <circle cx="1400" cy="290" r="130" fill="#5cae51"/>
-  <rect x="1080" y="300" width="300" height="200" rx="18" fill="#c98d4b"/>
-  <polygon points="1060,310 1230,190 1400,310" fill="#a8683a"/>
-  <rect x="1190" y="380" width="80" height="90" rx="10" fill="#6d4527"/>
-  <rect x="1105" y="330" width="60" height="55" rx="8" fill="#ffe9c9"/>
-  <rect x="1300" y="330" width="60" height="55" rx="8" fill="#ffe9c9"/>
-  <g stroke="#8a6a4a" stroke-width="12">
-    <line x1="1180" y1="500" x2="1120" y2="900"/>
-    <line x1="1280" y1="500" x2="1330" y2="900"/>
-    <line x1="1160" y1="580" x2="1295" y2="580"/>
-    <line x1="1150" y1="660" x2="1305" y2="660"/>
-    <line x1="1140" y1="740" x2="1315" y2="740"/>
-    <line x1="1130" y1="820" x2="1325" y2="820"/>
+
+  <!-- floor -->
+  <rect width="1920" height="1080" fill="url(#grassC)"/>
+
+  <!-- east path exiting through the gap at col 15, row 4 -->
+  <path d="M 1500 492 L 1920 492 L 1920 588 L 1500 588 Q 1440 540 1500 492 Z" fill="#d9b98a"/>
+  <line x1="1500" y1="496" x2="1920" y2="496" stroke="#c6a271" stroke-width="6"/>
+  <line x1="1500" y1="584" x2="1920" y2="584" stroke="#c6a271" stroke-width="6"/>
+
+  <!-- hedge walls with darker front faces (3/4 view), gap on the east at row 4 -->
+  <g>
+    <rect x="0" y="0" width="1920" height="96" fill="url(#hedgeC)"/>
+    <rect x="0" y="96" width="1920" height="24" fill="#356b30"/>
+    <rect x="0" y="960" width="1920" height="96" fill="url(#hedgeC)"/>
+    <rect x="0" y="1056" width="1920" height="24" fill="#356b30"/>
+    <rect x="0" y="0" width="120" height="1080" fill="url(#hedgeC)"/>
+    <rect x="96" y="0" width="24" height="1080" fill="#356b30"/>
+    <rect x="1800" y="0" width="120" height="480" fill="url(#hedgeC)"/>
+    <rect x="1776" y="0" width="24" height="480" fill="#356b30"/>
+    <rect x="1800" y="600" width="120" height="480" fill="url(#hedgeC)"/>
+    <rect x="1776" y="600" width="24" height="480" fill="#356b30"/>
+    <g fill="#5cab5b">
+      <circle cx="300" cy="48" r="38"/><circle cx="640" cy="52" r="32"/><circle cx="1320" cy="46" r="38"/><circle cx="1660" cy="52" r="32"/>
+      <circle cx="480" cy="1008" r="38"/><circle cx="1080" cy="1012" r="32"/><circle cx="1500" cy="1008" r="38"/>
+      <circle cx="58" cy="380" r="34"/><circle cx="58" cy="760" r="34"/><circle cx="1862" cy="300" r="34"/><circle cx="1862" cy="860" r="34"/>
+    </g>
   </g>
-  <path d="M 100 1000 Q 700 900 1200 940" stroke="#e8d5a8" stroke-width="60" fill="none" stroke-linecap="round" opacity="0.7"/>
-  <circle cx="520" cy="960" r="11" fill="#ff9ecb"/>
-  <circle cx="820" cy="995" r="9" fill="#ffd66b"/>
+
+  <!-- treehouse: trunk fills tiles (7-8, 1-2); house sits above on the north wall -->
+  <g>
+    <rect x="810" y="0" width="300" height="150" rx="18" fill="#b5804e"/>
+    <rect x="795" y="128" width="330" height="26" rx="10" fill="#8a6a4a"/>
+    <rect x="900" y="34" width="120" height="94" rx="10" fill="#6e563c"/>
+    <ellipse cx="960" cy="352" rx="150" ry="26" fill="#000" opacity="0.10"/>
+    <rect x="852" y="132" width="216" height="228" rx="26" fill="#7a5230"/>
+    <rect x="852" y="322" width="216" height="38" rx="14" fill="#64411f"/>
+    <!-- ladder on the trunk's south face, down to Robin's spot -->
+    <line x1="930" y1="150" x2="930" y2="356" stroke="#e8cf9a" stroke-width="12" stroke-linecap="round"/>
+    <line x1="990" y1="150" x2="990" y2="356" stroke="#e8cf9a" stroke-width="12" stroke-linecap="round"/>
+    <g stroke="#d9b978" stroke-width="10" stroke-linecap="round">
+      <line x1="930" y1="188" x2="990" y2="188"/>
+      <line x1="930" y1="236" x2="990" y2="236"/>
+      <line x1="930" y1="284" x2="990" y2="284"/>
+      <line x1="930" y1="332" x2="990" y2="332"/>
+    </g>
+  </g>
+
+  <!-- boulders on tiles (3,5) and (11,5), front faces shaded -->
+  <g>
+    <ellipse cx="420" cy="708" rx="56" ry="16" fill="#000" opacity="0.10"/>
+    <path d="M 372 700 Q 372 636 420 630 Q 468 636 468 700 Z" fill="#9aa3ab"/>
+    <rect x="372" y="686" width="96" height="16" rx="8" fill="#7f8890"/>
+    <ellipse cx="1380" cy="708" rx="56" ry="16" fill="#000" opacity="0.10"/>
+    <path d="M 1332 700 Q 1332 636 1380 630 Q 1428 636 1428 700 Z" fill="#9aa3ab"/>
+    <rect x="1332" y="686" width="96" height="16" rx="8" fill="#7f8890"/>
+  </g>
+
+  <!-- flowers on walkable grass -->
+  <g>
+    <circle cx="300" cy="330" r="10" fill="#ffd66b"/><circle cx="300" cy="330" r="4" fill="#ff9d5c"/>
+    <circle cx="1560" cy="760" r="10" fill="#ff9db8"/><circle cx="1560" cy="760" r="4" fill="#fff"/>
+    <circle cx="720" cy="880" r="10" fill="#b7a7ff"/><circle cx="720" cy="880" r="4" fill="#fff"/>
+    <circle cx="1200" cy="900" r="10" fill="#ffd66b"/><circle cx="1200" cy="900" r="4" fill="#ff9d5c"/>
+  </g>
 </svg>

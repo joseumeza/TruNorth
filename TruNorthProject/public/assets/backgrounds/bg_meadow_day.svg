@@ -1,32 +1,77 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <!-- 3/4 top-down meadow room; walls/props align to the 16x9 grid of 120px
+       collision tiles in c1s1/c1s2 (hedge border, swings at cols 5-6 row 1,
+       tree at col 12 row 3, east path gap at col 15 row 4). -->
   <defs>
-    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#aee3ff"/><stop offset="1" stop-color="#e8f9ff"/>
-    </linearGradient>
-    <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#9edb6f"/><stop offset="1" stop-color="#6cbf4e"/>
+    <pattern id="grass" width="240" height="240" patternUnits="userSpaceOnUse">
+      <rect width="240" height="240" fill="#8fce62"/>
+      <rect width="120" height="120" fill="#86c65a"/>
+      <rect x="120" y="120" width="120" height="120" fill="#86c65a"/>
+      <path d="M 40 70 q 6 -18 12 0 M 172 190 q 6 -18 12 0" stroke="#6fb04a" stroke-width="5" fill="none" stroke-linecap="round"/>
+    </pattern>
+    <linearGradient id="hedgeTop" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#57a84b"/><stop offset="1" stop-color="#4a9440"/>
     </linearGradient>
   </defs>
-  <rect width="1920" height="1080" fill="url(#sky)"/>
-  <circle cx="1660" cy="180" r="90" fill="#ffe27a"/>
-  <circle cx="1660" cy="180" r="120" fill="#ffe27a" opacity="0.35"/>
-  <ellipse cx="420" cy="230" rx="150" ry="55" fill="#ffffff" opacity="0.9"/>
-  <ellipse cx="560" cy="260" rx="110" ry="45" fill="#ffffff" opacity="0.8"/>
-  <ellipse cx="960" cy="1010" rx="1400" ry="420" fill="url(#grass)"/>
-  <ellipse cx="1450" cy="700" rx="70" ry="150" fill="#7a5230"/>
-  <circle cx="1450" cy="480" r="200" fill="#57a84b"/>
-  <circle cx="1320" cy="560" r="120" fill="#65b857"/>
-  <circle cx="1580" cy="560" r="120" fill="#65b857"/>
-  <g stroke="#8a6a4a" stroke-width="14">
-    <line x1="620" y1="420" x2="560" y2="700"/>
-    <line x1="760" y1="420" x2="820" y2="700"/>
-    <line x1="600" y1="420" x2="780" y2="420"/>
-    <line x1="640" y1="440" x2="640" y2="620"/>
-    <line x1="740" y1="440" x2="740" y2="620"/>
+
+  <!-- floor -->
+  <rect width="1920" height="1080" fill="url(#grass)"/>
+
+  <!-- east path exiting through the gap at col 15, row 4 -->
+  <path d="M 1500 492 L 1920 492 L 1920 588 L 1500 588 Q 1440 540 1500 492 Z" fill="#d9b98a"/>
+  <line x1="1500" y1="496" x2="1920" y2="496" stroke="#c6a271" stroke-width="6"/>
+  <line x1="1500" y1="584" x2="1920" y2="584" stroke="#c6a271" stroke-width="6"/>
+
+  <!-- hedge walls: rounded top + darker front face on the south edge (3/4 view) -->
+  <g>
+    <rect x="0" y="0" width="1920" height="96" fill="url(#hedgeTop)"/>
+    <rect x="0" y="96" width="1920" height="24" fill="#3c7a35"/>
+    <rect x="0" y="960" width="1920" height="96" fill="url(#hedgeTop)"/>
+    <rect x="0" y="1056" width="1920" height="24" fill="#3c7a35"/>
+    <rect x="0" y="0" width="120" height="1080" fill="url(#hedgeTop)"/>
+    <rect x="96" y="0" width="24" height="1080" fill="#3c7a35"/>
+    <rect x="1800" y="0" width="120" height="480" fill="url(#hedgeTop)"/>
+    <rect x="1776" y="0" width="24" height="480" fill="#3c7a35"/>
+    <rect x="1800" y="600" width="120" height="480" fill="url(#hedgeTop)"/>
+    <rect x="1776" y="600" width="24" height="480" fill="#3c7a35"/>
+    <!-- hedge bobbles for texture -->
+    <g fill="#63b356">
+      <circle cx="240" cy="48" r="40"/><circle cx="520" cy="52" r="34"/><circle cx="1060" cy="46" r="38"/><circle cx="1500" cy="52" r="34"/>
+      <circle cx="360" cy="1008" r="40"/><circle cx="900" cy="1012" r="34"/><circle cx="1560" cy="1008" r="38"/>
+      <circle cx="58" cy="300" r="36"/><circle cx="58" cy="700" r="36"/><circle cx="1862" cy="260" r="36"/><circle cx="1862" cy="820" r="36"/>
+    </g>
   </g>
-  <rect x="620" y="615" width="140" height="18" rx="8" fill="#c98d4b"/>
-  <ellipse cx="640" cy="960" rx="26" ry="10" fill="#fff" opacity="0.8"/>
-  <circle cx="640" cy="945" r="12" fill="#ff9ecb"/>
-  <circle cx="1120" cy="985" r="10" fill="#ffd66b"/>
-  <ellipse cx="1120" cy="998" rx="22" ry="8" fill="#fff" opacity="0.7"/>
+
+  <!-- swing frame on tiles (5,1)-(6,1): posts + top bar + hanging seats -->
+  <g>
+    <rect x="612" y="132" width="16" height="96" rx="6" fill="#8a6a4a"/>
+    <rect x="812" y="132" width="16" height="96" rx="6" fill="#8a6a4a"/>
+    <rect x="600" y="124" width="240" height="16" rx="8" fill="#a07c52"/>
+    <line x1="668" y1="140" x2="668" y2="196" stroke="#6e563c" stroke-width="5"/>
+    <line x1="700" y1="140" x2="700" y2="196" stroke="#6e563c" stroke-width="5"/>
+    <rect x="656" y="196" width="56" height="12" rx="5" fill="#c98d4b"/>
+    <line x1="756" y1="140" x2="756" y2="188" stroke="#6e563c" stroke-width="5"/>
+    <line x1="788" y1="140" x2="788" y2="188" stroke="#6e563c" stroke-width="5"/>
+    <rect x="744" y="188" width="56" height="12" rx="5" fill="#c98d4b"/>
+  </g>
+
+  <!-- big tree on tile (12,3): canopy overhangs to the north, trunk shows its front -->
+  <g>
+    <ellipse cx="1500" cy="486" rx="78" ry="22" fill="#000" opacity="0.10"/>
+    <rect x="1462" y="380" width="76" height="100" rx="20" fill="#7a5230"/>
+    <rect x="1462" y="456" width="76" height="24" rx="10" fill="#64411f"/>
+    <circle cx="1500" cy="330" r="120" fill="#57a84b"/>
+    <circle cx="1408" cy="368" r="70" fill="#65b857"/>
+    <circle cx="1592" cy="368" r="70" fill="#65b857"/>
+    <circle cx="1500" cy="272" r="76" fill="#65b857"/>
+  </g>
+
+  <!-- flowers scattered on walkable grass -->
+  <g>
+    <circle cx="330" cy="330" r="10" fill="#ffd66b"/><circle cx="330" cy="330" r="4" fill="#ff9d5c"/>
+    <circle cx="990" cy="640" r="10" fill="#ff9db8"/><circle cx="990" cy="640" r="4" fill="#fff"/>
+    <circle cx="1320" cy="880" r="10" fill="#ffd66b"/><circle cx="1320" cy="880" r="4" fill="#ff9d5c"/>
+    <circle cx="560" cy="880" r="10" fill="#b7a7ff"/><circle cx="560" cy="880" r="4" fill="#fff"/>
+    <circle cx="1660" cy="720" r="10" fill="#ff9db8"/><circle cx="1660" cy="720" r="4" fill="#fff"/>
+  </g>
 </svg>

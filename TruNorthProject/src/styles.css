@@ -69,7 +69,8 @@ html, body {
 .sprite { position: absolute; }
 .sprite img, .sprite svg { width: 100%; height: 100%; display: block; }
 
-.avatar-sprite { width: 128px; height: 128px; transition: top 0.4s ease, left 0.05s linear; }
+.avatar-sprite { width: 128px; height: 128px; transition: top 0.05s linear, left 0.05s linear; }
+.avatar-sprite.climbing { transition: top 0.4s ease, left 0.05s linear; }
 .avatar-sprite svg { transform: scaleX(var(--flip, 1)); }
 .avatar-sprite.walking { animation: bob 0.4s ease-in-out infinite alternate; }
 

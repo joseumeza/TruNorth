@@ -5,9 +5,9 @@
  * applied as CSS classes on the sprite (placeholder-art strategy — see
  * assets-src/art-style-guide.md).
  */
-import type { AssetManifest, ManifestEntry, Scene, SceneCharacter } from '../types';
+import type { AssetManifest, Facing, ManifestEntry, Scene, SceneCharacter } from '../types';
 import type { Viewport } from './Viewport';
-import { avatarSvg } from './AvatarSprite';
+import { avatarSvg, type AvatarPose } from './AvatarSprite';
 import type { AvatarConfig } from '../types';
 
 const EXPRESSION_CLASSES = ['expr-neutral', 'expr-worried', 'expr-worried_sad', 'expr-shaky_nod', 'expr-relieved_grin', 'expr-excited_glow'];
@@ -19,6 +19,8 @@ export class SceneRenderer {
   private fxEls = new Map<string, HTMLElement>();
   private collectibleEls = new Map<string, HTMLElement>();
   private avatarEl: HTMLElement | null = null;
+  private avatarConfig: AvatarConfig | null = null;
+  private avatarPose: AvatarPose = 'down';
 
   constructor(
     private viewport: Viewport,
@@ -41,6 +43,8 @@ export class SceneRenderer {
     bg.replaceChildren();
     fx.replaceChildren();
     characters.replaceChildren();
+    // The avatar shares the characters layer (y-sorted depth), so re-adopt it.
+    if (this.avatarEl) characters.appendChild(this.avatarEl);
     this.characterEls.clear();
     this.fxEls.clear();
     this.collectibleEls.clear();
@@ -88,6 +92,8 @@ export class SceneRenderer {
     const [ax, ay] = entry.anchor ?? [0.5, 1.0];
     wrap.style.left = `${position[0] - entry.width * ax}px`;
     wrap.style.top = `${position[1] - entry.height * ay}px`;
+    // Depth follows feet-y so sprites lower in the room draw in front (3/4 view).
+    wrap.style.zIndex = String(Math.round(position[1]));
     const img = document.createElement('img');
     img.src = `/assets/${entry.file}`;
     img.alt = '';
@@ -142,20 +148,32 @@ export class SceneRenderer {
   // ── Avatar ──────────────────────────────────────────────────────────────────
 
   mountAvatar(config: AvatarConfig): void {
-    this.viewport.layers.avatar.replaceChildren();
+    this.avatarEl?.remove();
     const el = document.createElement('div');
     el.className = 'sprite avatar-sprite';
-    el.innerHTML = avatarSvg(config); // trusted, code-generated SVG only
+    el.innerHTML = avatarSvg(config, this.avatarPose); // trusted, code-generated SVG only
     this.avatarEl = el;
-    this.viewport.layers.avatar.appendChild(el);
+    this.avatarConfig = config;
+    this.viewport.layers.characters.appendChild(el);
   }
 
-  setAvatarPosition(x: number, y: number, facing: 'left' | 'right', moving: boolean): void {
+  setAvatarPosition(x: number, y: number, facing: Facing, moving: boolean): void {
     if (!this.avatarEl) return;
     this.avatarEl.style.left = `${x - 64}px`;
     this.avatarEl.style.top = `${y - 128}px`;
+    this.avatarEl.style.zIndex = String(Math.round(y));
+    const pose: AvatarPose = facing === 'up' || facing === 'down' ? facing : 'side';
+    if (pose !== this.avatarPose && this.avatarConfig) {
+      this.avatarPose = pose;
+      this.avatarEl.innerHTML = avatarSvg(this.avatarConfig, pose);
+    }
     this.avatarEl.style.setProperty('--flip', facing === 'left' ? '-1' : '1');
     this.avatarEl.classList.toggle('walking', moving);
+  }
+
+  /** Smooth vertical easing during the W4 rung climb only. */
+  setAvatarClimbing(active: boolean): void {
+    this.avatarEl?.classList.toggle('climbing', active);
   }
 
   setAvatarVisible(visible: boolean): void {

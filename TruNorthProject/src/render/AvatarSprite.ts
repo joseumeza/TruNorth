@@ -1,9 +1,13 @@
 /**
  * Runtime-composed player avatar (spec §7.5): body base tinted by skin tone
  * plus a hair overlay, generated as inline SVG so the 5×5 matrix needs no
- * pre-composed art files.
+ * pre-composed art files. For the 3/4 top-down view the avatar has three
+ * poses — front ('down'), back ('up'), and profile ('side', mirrored for
+ * left-facing via CSS --flip).
  */
 import type { AvatarConfig, HairStyle, SkinTone } from '../types';
+
+export type AvatarPose = 'down' | 'up' | 'side';
 
 const SKIN: Record<SkinTone, string> = {
   tone_1: '#f6d7b8',
@@ -28,8 +32,23 @@ const HAIR_PATHS: Record<HairStyle, string> = {
     '<circle cx="44" cy="18" r="13" fill="{c}"/><circle cx="84" cy="18" r="13" fill="{c}"/><path d="M 42 32 Q 64 16 86 32 Q 74 26 64 26 Q 54 26 42 32" fill="{c}"/>',
 };
 
+const FACE: Record<AvatarPose, string> = {
+  down: [
+    '<circle cx="55" cy="40" r="4" fill="#3d3d3d"/>',
+    '<circle cx="73" cy="40" r="4" fill="#3d3d3d"/>',
+    '<path d="M 57 51 Q 64 55 71 51" stroke="#3d3d3d" stroke-width="3" fill="none" stroke-linecap="round"/>',
+  ].join(''),
+  // Profile faces stage-right; CSS --flip mirrors it for left.
+  side: [
+    '<circle cx="78" cy="40" r="4" fill="#3d3d3d"/>',
+    '<path d="M 78 51 Q 83 53 86 50" stroke="#3d3d3d" stroke-width="3" fill="none" stroke-linecap="round"/>',
+  ].join(''),
+  // Back view: hair wraps over where the face would be.
+  up: `<path d="M 42 28 Q 64 18 86 28 L 86 50 Q 64 64 42 50 Z" fill="${HAIR_COLOR}"/>`,
+};
+
 /** 128×128 logical sprite, feet-center anchored by the renderer. */
-export function avatarSvg(config: AvatarConfig): string {
+export function avatarSvg(config: AvatarConfig, pose: AvatarPose = 'down'): string {
   const skin = SKIN[config.skinTone];
   const hair = HAIR_PATHS[config.hair].replaceAll('{c}', HAIR_COLOR);
   return [
@@ -42,9 +61,7 @@ export function avatarSvg(config: AvatarConfig): string {
     '<rect x="68" y="102" width="14" height="22" rx="6" fill="#33518a"/>',
     `<circle cx="64" cy="38" r="26" fill="${skin}"/>`,
     hair,
-    '<circle cx="55" cy="40" r="4" fill="#3d3d3d"/>',
-    '<circle cx="73" cy="40" r="4" fill="#3d3d3d"/>',
-    '<path d="M 57 51 Q 64 55 71 51" stroke="#3d3d3d" stroke-width="3" fill="none" stroke-linecap="round"/>',
+    FACE[pose],
     '</svg>',
   ].join('');
 }

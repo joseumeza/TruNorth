@@ -5,10 +5,21 @@
   "movementTier": "B",
   "background": "bg_treehouse_rung",
   "narration": "One rung at a time. Robin climbs right beside you, and the worry cloud is gone.",
-  "avatarStart": [760, 880],
+  "avatarStart": [960, 420],
+  "tileMap": [
+    "################",
+    "#.....####.....#",
+    "#.....####.....#",
+    "#..............#",
+    "#..............#",
+    "#..............#",
+    "#..............#",
+    "#..............#",
+    "################"
+  ],
   "characters": [
-    { "assetRef": "char_robin", "id": "robin", "position": [1080, 820], "expression": "relieved_grin" },
-    { "assetRef": "char_companion_fox", "id": "companion", "position": [560, 900], "expression": "excited_glow" }
+    { "assetRef": "char_robin", "id": "robin", "position": [1080, 420], "expression": "relieved_grin" },
+    { "assetRef": "char_companion_fox", "id": "companion", "position": [660, 480], "expression": "excited_glow" }
   ],
   "triggers": [],
   "collectibles": [],
@@ -18,7 +29,7 @@
     "prompt": "Climb up with Robin — one rung at a time!",
     "tapLabel": "Climb a rung"
   },
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "content-team",
   "approvalState": "draft",
   "lastSmeReviewDate": "2026-07-07"

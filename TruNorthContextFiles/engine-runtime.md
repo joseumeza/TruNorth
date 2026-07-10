@@ -14,8 +14,26 @@
 
 Phase machine per spec §5.3: `loading → exploring → (encounter) → decision → awaiting_companion → consequence → transitioning | exploring`, plus `climb` (W4) and `chapter_end`.
 
-- **loadScene:** renders scene (residue-adjusted NPC expressions via `EmotionalResidue.residueExpression`), positions the avatar at `avatarStart`, logs `scene_enter`, saves, shows narration, mounts Tier A click zones, then unfreezes input. A scene with `climb` goes straight to the climb interaction.
+- **loadScene:** renders scene (residue-adjusted NPC expressions via `EmotionalResidue.residueExpression`), builds the room's `TileMap` from `scene.tileMap` (fallback: `TileMap.openRoom()`), positions the avatar at `avatarStart` facing down, logs `scene_enter`, saves, shows narration, mounts Tier A click zones, then unfreezes input. A scene with `climb` goes straight to the climb interaction (avatar faces up, `.climbing` class eases the rise).
 - **update:** only in `exploring`; Tier B polls `MovementController` with `InputController.keys` and runs AABB checks (`CollisionSystem`) against armed triggers and un-collected/un-gated collectibles.
+
+## Top-down rooms (`src/engine/TileMap.ts`, `MovementController.ts`)
+
+Scenes are Pokémon-style fixed rooms: one screen, 3/4 top-down view, no scrolling.
+
+- `TileMap`: 16×9 grid of 120 px tiles over the 1920×1080 stage, parsed from the scene's
+  `tileMap` rows (`'#'` blocked / `'.'` walkable). Collision-only — the visuals are the
+  background art, which must match the rows. `isBlocked(col,row)` (out-of-room = blocked),
+  `blockedAt(x,y)`, `boxBlocked(aabb)` (any blocked tile touching the box),
+  `TileMap.openRoom()` fallback (walled border, open floor).
+- `MovementController`: smooth 420 px/s, axis-separated moves — each axis is tested
+  against `boxBlocked(avatarBox(...))` independently, so a wall stops one axis while the
+  other keeps sliding. `facing` is 4-directional (`up/down/left/right`, horizontal wins on
+  diagonals); the old global `WALK_BOUNDS` clamp is gone — walls come from the room's tiles.
+- Exits are `goToScene` triggers placed on walkable door-gap tiles (e.g. the east gap at
+  col 15 row 4 in w1). `validate-content.ts` enforces per scene: `tileMap` present,
+  `avatarStart` on a walkable tile, Tier B triggers overlapping walkable floor, and
+  Tier B collectibles on walkable tiles.
 - **Triggers:** `startDecision` → decision flow; `goToScene` → transition; `completeChapter` → celebration flow. Fired triggers disarm until the scene reloads (or re-arm for the walk-back repair).
 - **Decision flow:** freeze input (spec §5.4) → `ChoicePanel` → thinking cue after 300 ms → companion request (`knownBand` set for choice input; the authored band is authoritative) → sanitize → safety flags re-open the decision (distress additionally shows the support overlay) → consequence: companion expression (`expressionForBand`), fx mapping (`worry_cloud_shrink/soften/darken`, `world_bloom`, `soft_dim`), harp/thud SFX, particle burst → meter fill → event log + residue + immediate save → companion bubble → repair or route.
 - **Repairs (spec §9.6):** `walk-back` re-arms the trigger with an instruction banner and releases movement; the other three show a gesture button then re-open the decision, logging `repair_completed`.
@@ -24,8 +42,8 @@ Phase machine per spec §5.3: `loading → exploring → (encounter) → decisio
 
 ## Rendering (`src/render/`)
 
-- `Viewport`: `.game-root > .game-viewport > .game-stage(1920×1080)`, uniform `transform: scale()` on resize; letterbox from the root background; `toStageCoords()` converts DOMRects to logical px (used for particle targets). Layer z-order per spec §6.1.
-- `SceneRenderer`: `<img>` sprites positioned by manifest anchor (feet-center). Expressions are CSS classes (placeholder-art strategy — dim/desaturate for worried, glow for excited; see `assets-src/art-style-guide.md`). Worry-cloud variants scale big→gone. The avatar is runtime-generated inline SVG (`AvatarSprite.avatarSvg`) tinted by the 5×5 skin/hair matrix.
+- `Viewport`: `.game-root > .game-viewport > .game-stage(1920×1080)`, uniform `transform: scale()` on resize; letterbox from the root background; `toStageCoords()` converts DOMRects to logical px (used for particle targets). Six layers (`bg → fx → characters → bubbles → hud → overlay`); the avatar shares the `characters` layer so world depth can y-sort.
+- `SceneRenderer`: `<img>` sprites positioned by manifest anchor (feet-center); every world sprite gets `z-index = round(feet y)` so sprites lower in the room draw in front (3/4 depth). Expressions are CSS classes (placeholder-art strategy — dim/desaturate for worried, glow for excited; see `assets-src/art-style-guide.md`). Worry-cloud variants scale big→gone. The avatar is runtime-generated inline SVG (`AvatarSprite.avatarSvg`) tinted by the 5×5 skin/hair matrix, with three poses — front (`down`), back (`up`), profile (`side`, CSS `--flip` mirrors it for left); `setAvatarPosition` swaps the pose when facing changes and `setAvatarClimbing` toggles smooth vertical easing for W4.
 - `BubbleManager`: one bubble at a time; char-by-char reveal (22 ms) with tap-to-complete then tap-to-advance; client-side re-split at 120 chars; flips below the head near the top edge; thinking cue is an in-character line, not a spinner. Narration renders as a storybook bar with a Continue button.
 - `ParticleSystem`: ≤ 12 particles on a quadratic Bézier via rAF; skipped entirely under `prefers-reduced-motion`.
 

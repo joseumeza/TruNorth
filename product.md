@@ -62,10 +62,10 @@ These rules exist so `product.md` stays trustworthy and consistent across every 
 | Product | TruNorth — choice-driven social-emotional learning (SEL) narrative for ages 5–15 |
 | Project root | `TruNorthProject/` |
 | Spec source of truth | `TruNorthTechnicalSpecification.md` (v3.0, build-ready) |
-| Overall implementation status | **✅ MVP playable end-to-end.** Two chapters (Ch.1 meadow + Ch.2 showcase golden path W1→W4), scene engine, five-layer companion safety pipeline, offline demo mode, local persistence, onboarding, parent gate + trust screen, tests (70 unit/integration + 19 red-team + e2e golden path) all green. Art is **placeholder SVG** (not the frozen style). EXT items (remote store, parent dashboard, voice, enterprise) not built. |
+| Overall implementation status | **✅ MVP playable end-to-end.** Two chapters (Ch.1 meadow + Ch.2 showcase golden path W1→W4) as **Pokémon-style 3/4 top-down single-screen rooms** (tile collision, 4-direction avatar, y-sorted depth), scene engine, five-layer companion safety pipeline, offline demo mode, local persistence, onboarding, parent gate + trust screen, tests (57 unit/integration + 19 red-team + e2e golden path) all green. Art is **placeholder SVG** (not the frozen style). EXT items (remote store, parent dashboard, voice, enterprise) not built. |
 | Toolchain | Node 22 (`.nvmrc`), Vite 6, TypeScript 5, Vitest 3, Playwright, Ajv, tsx — see ADR-001 for the Vite 6-vs-8 deviation |
 | Quick test | `cd TruNorthProject && npm install && npm run demo` → http://localhost:4173/?demo=1 |
-| Last updated | 2026-07-07 |
+| Last updated | 2026-07-09 |
 
 ---
 
@@ -101,7 +101,7 @@ TruNorthProject/
 │   ├── companion/             # ✅ CompanionClient (live), DemoCompanionClient, typedRubric
 │   ├── content/               # ✅ ContentLibrary (glob-imported content), fallbackLines
 │   ├── engine/                # ✅ SceneEngine, SceneGraph, DecisionResolver, MovementController,
-│   │                          #    CollisionSystem, EmotionalResidue
+│   │                          #    CollisionSystem, TileMap, EmotionalResidue
 │   ├── input/InputController.ts   # ✅ Keyboard + freeze/release + pause
 │   ├── render/                # ✅ Viewport, SceneRenderer, BubbleManager, ParticleSystem, AvatarSprite
 │   ├── safety/OutputSanitizer.ts  # ✅ Client-side output sanitization
@@ -132,25 +132,33 @@ restores a save or runs onboarding (demo auto-profiles into ch2), starts `SceneE
 and the rAF loop. Boot walkthrough: [engine-runtime.md](./TruNorthContextFiles/engine-runtime.md).
 
 ### 3.2 Scene engine (`src/engine/`)
-✅ Implemented — full lifecycle per spec §5.3; deep-dive in
+✅ Implemented — full lifecycle per spec §5.3; **scenes are Pokémon-style 3/4 top-down
+single-screen rooms** (no scrolling); deep-dive in
 [engine-runtime.md](./TruNorthContextFiles/engine-runtime.md).
-- `SceneEngine` — orchestrator: scene load/transition, Tier A click zones / Tier B collision,
-  decision → companion → consequence flow, repairs (walk-back + 3 gestures), fx mapping,
-  meter juice, W4 3-tap climb, chapter completion → celebration → parent gate → next chapter,
+- `SceneEngine` — orchestrator: scene load/transition (builds the room `TileMap` per scene),
+  Tier A click zones / Tier B collision, decision → companion → consequence flow,
+  repairs (walk-back + 3 gestures), fx mapping, meter juice, W4 3-tap climb (back pose,
+  eased rise), chapter completion → celebration → parent gate → next chapter,
   distress overlay, pause, resume line, immediate auto-save.
 - `SceneGraph` — `nextSceneId()` from consequences; `reachableFrom()` BFS (used by tests/CI).
 - `DecisionResolver` — `resolveConsequence()`, `applyMeterDeltas()` (fill wraps to levels),
   `appendDecisionEvent()`, companion leveling at 2/4 strong choices.
-- `MovementController` — WASD/arrows at 420 px/s, walk-bounds clamp, facing/idle state.
+- `TileMap` — 16×9 grid of 120 px collision tiles parsed from `scene.tileMap`
+  (`'#'`/`'.'` rows): `isBlocked`, `blockedAt`, `boxBlocked`, `openRoom()` fallback.
+- `MovementController` — smooth WASD/arrows at 420 px/s over the room's tile map;
+  axis-separated collision (slides along walls); 4-direction `facing` (`up/down/left/right`).
 - `CollisionSystem` — AABB helpers: `aabbOverlap`, `avatarBox` (feet region), `collectibleBox`.
 - `EmotionalResidue` — per-chapter per-NPC `trusting/neutral/shaken`; nudges NPC default
   expressions; never blocks progress.
 
 ### 3.3 Rendering (`src/render/`)
 ✅ Implemented — details in [engine-runtime.md](./TruNorthContextFiles/engine-runtime.md).
-- `Viewport` — 16:9 letterboxed 1920×1080 stage, uniform scale, 7 z-ordered layers.
-- `SceneRenderer` — manifest-driven `<img>` sprites (feet-center anchors), expression CSS
-  states, worry-cloud variants, runtime-composed avatar (5×5 skin/hair inline SVG).
+- `Viewport` — 16:9 letterboxed 1920×1080 stage, uniform scale, 6 z-ordered layers
+  (avatar shares the `characters` layer so world depth y-sorts).
+- `SceneRenderer` — manifest-driven `<img>` sprites (feet-center anchors, per-sprite
+  `z-index` from feet y for 3/4 depth), expression CSS states, worry-cloud variants,
+  runtime-composed avatar (5×5 skin/hair inline SVG) with front/back/profile poses
+  swapped by facing (`setAvatarPosition`) + `setAvatarClimbing` easing toggle.
 - `BubbleManager` — anchored bubbles, char-by-char reveal + tap-to-complete, 120-char
   split sequencing, in-character thinking cue (300 ms), narration bar. Exports `splitBubbleText`.
 - `ParticleSystem` — ≤12 rAF Bézier particles to the meter; disabled by reduced-motion.
@@ -201,10 +209,10 @@ soft thud (poor), thinking bloop, celebration; lazy context; global mute; never 
 sole feedback channel.
 
 ### 3.10 Shared types (`src/types/index.ts`)
-✅ Implemented. All contracts from spec §9–§12 (GameState, Scene, DecisionPoint,
-Consequence, EmotionalArc, CompanionRequest/Response, ProgressStore, manifest,
-telemetry) + `UI_TOKENS` (age-banded), `canUsePlayfulExternalization()` gate,
-`expressionForBand()` state machine.
+✅ Implemented. All contracts from spec §9–§12 (GameState, Scene incl. `tileMap` rows,
+DecisionPoint, Consequence, EmotionalArc, CompanionRequest/Response, ProgressStore,
+manifest, telemetry) + `Facing` (4-direction avatar facing), `UI_TOKENS` (age-banded),
+`canUsePlayfulExternalization()` gate, `expressionForBand()` state machine.
 
 ### 3.11 Serverless API (`api/`)
 ✅ Implemented (live path) — deep-dive in
@@ -223,8 +231,12 @@ telemetry) + `UI_TOKENS` (age-banded), `canUsePlayfulExternalization()` gate,
 
 ### 3.12 Content & schemas (`content/`)
 ✅ Implemented.
-- Schemas: `scene`, `decision-point` (requires complete 4-field `emotionalArc` +
-  governance fields), `game-state`, `companion-response`.
+- Schemas: `scene` (incl. `tileMap`: 9 rows × 16 chars of `#`/`.`), `decision-point`
+  (requires complete 4-field `emotionalArc` + governance fields), `game-state`,
+  `companion-response`.
+- Every scene is a top-down room: `tileMap` collision rows matching the background art,
+  full-room character/trigger/collectible placement, exits as `goToScene` triggers on
+  door-gap tiles.
 - Ch.1 "The Meadow" (ages 5–7, Tier A): c1s1 → `dp_leftout_swing` (3 options,
   sit-with repair) → c1s2 → chapter complete.
 - Ch.2 "The Clearing — Worry & Brave" (8–10, Tier B): showcase golden path
@@ -236,22 +248,26 @@ telemetry) + `UI_TOKENS` (age-banded), `canUsePlayfulExternalization()` gate,
 ### 3.13 Assets (`assets-src/`, `public/assets/`)
 🟨 Partial. Pipeline fully works (manifest.yaml → validated `manifest.json`; provenance
 ledger rows for all 12 assets), but the art itself is **hand-authored placeholder SVG**,
-not the frozen "clean cartoon" style (see `assets-src/art-style-guide.md`). Audio is
-synthesized, no audio files.
+not the frozen "clean cartoon" style (see `assets-src/art-style-guide.md`). Backgrounds
+are drawn as **3/4 top-down rooms aligned to each scene's 16×9 tile grid** (hedge walls
+with front faces, door gaps on walkable exit tiles). Audio is synthesized, no audio files.
 
 ### 3.14 Build & tooling scripts (`scripts/`)
 ✅ Implemented.
-- `validate-content.ts` — schema validation, assetRef existence, routing integrity +
-  reachability BFS, fallback coverage, demo-bundle coverage/contract. Exits non-zero on error.
+- `validate-content.ts` — schema validation, assetRef existence, tile-map layout checks
+  (tileMap present, avatarStart walkable, Tier B triggers/collectibles on walkable floor),
+  routing integrity + reachability BFS, fallback coverage, demo-bundle coverage/contract.
+  Exits non-zero on error.
 - `build-asset-manifest.ts` — YAML → `public/assets/manifest.json`; fails on missing files.
 - `red-team-suite.ts` — 19 adversarial cases through the real pipeline with a mock model.
 - `audit-bundle-size.ts` — dist walk vs 15 MB budget (currently ~0.09 MB).
 
 ### 3.15 Tests (`tests/`)
 ✅ Implemented — all green.
-- Unit (6 suites / 45 tests): resolver + meters + leveling, graph routing + reachability,
-  bubble splitting, local store (round-trip, corrupt, prune, clear), collision + movement,
-  residue, filters/validators/sanitizer/code gates.
+- Unit (7 suites / 43 tests): resolver + meters + leveling, graph routing + reachability,
+  bubble splitting, local store (round-trip, corrupt, prune, clear), tile-map parsing +
+  wall blocking + wall sliding + 4-dir facing + trigger/collectible AABB, residue,
+  filters/validators/sanitizer/code gates.
 - Integration: pipeline (confidence floor, band authority, retry, no-key, output filter,
   distress) + companion clients (live fallback, demo bundle/rubric/distress).
 - Red-team: 19 cases (Vitest wrapper + standalone harness).

@@ -5,20 +5,31 @@
   "movementTier": "A",
   "background": "bg_meadow_day",
   "narration": "Milo smiles a big smile. Playing together makes the meadow feel even sunnier. The path home glows softly.",
-  "avatarStart": [820, 840],
+  "avatarStart": [660, 660],
+  "tileMap": [
+    "################",
+    "#....##........#",
+    "#..............#",
+    "#...........#..#",
+    "#...............",
+    "#..............#",
+    "#..............#",
+    "#..............#",
+    "################"
+  ],
   "characters": [
-    { "assetRef": "char_milo", "id": "milo", "position": [980, 820], "expression": "relieved_grin" },
-    { "assetRef": "char_companion_fox", "id": "companion", "position": [640, 860], "expression": "excited_glow" },
-    { "assetRef": "char_grownup", "id": "grownup", "position": [1650, 780] }
+    { "assetRef": "char_milo", "id": "milo", "position": [960, 590], "expression": "relieved_grin" },
+    { "assetRef": "char_companion_fox", "id": "companion", "position": [780, 690], "expression": "excited_glow" },
+    { "assetRef": "char_grownup", "id": "grownup", "position": [1560, 570] }
   ],
   "triggers": [
-    { "id": "path_home", "bounds": [1560, 620, 280, 320], "action": "completeChapter", "target": "ch1" }
+    { "id": "path_home", "bounds": [1740, 420, 180, 240], "action": "completeChapter", "target": "ch1" }
   ],
   "collectibles": [
-    { "id": "spark_c1_2", "assetRef": "collectible_spark", "position": [1240, 920], "kind": "kindness_spark" }
+    { "id": "spark_c1_2", "assetRef": "collectible_spark", "position": [1240, 810], "kind": "kindness_spark" }
   ],
   "decisionPoints": [],
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "content-team",
   "approvalState": "draft",
   "lastSmeReviewDate": "2026-07-07"

@@ -5,20 +5,31 @@
   "movementTier": "B",
   "background": "bg_clearing_day",
   "narration": "Robin keeps looking up at the ladder. The other kids are already in the treehouse. A worry cloud hangs over Robin's head.",
-  "avatarStart": [360, 860],
+  "avatarStart": [360, 540],
+  "tileMap": [
+    "################",
+    "#......##......#",
+    "#......##......#",
+    "#..............#",
+    "#...............",
+    "#..#.......#...#",
+    "#..............#",
+    "#..............#",
+    "################"
+  ],
   "characters": [
-    { "assetRef": "char_robin", "id": "robin", "position": [960, 780], "expression": "worried" },
-    { "assetRef": "char_companion_fox", "id": "companion", "position": [720, 860] }
+    { "assetRef": "char_robin", "id": "robin", "position": [960, 420], "expression": "worried" },
+    { "assetRef": "char_companion_fox", "id": "companion", "position": [660, 570] }
   ],
   "fx": [
-    { "assetRef": "fx_worry_cloud", "id": "worry_cloud", "position": [960, 520], "variant": "big" }
+    { "assetRef": "fx_worry_cloud", "id": "worry_cloud", "position": [960, 260], "variant": "big" }
   ],
   "triggers": [
-    { "id": "robin_encounter", "bounds": [860, 660, 220, 260], "action": "startDecision", "target": "dp_robin_ladder" }
+    { "id": "robin_encounter", "bounds": [840, 330, 240, 300], "action": "startDecision", "target": "dp_robin_ladder" }
   ],
   "collectibles": [],
   "decisionPoints": ["dp_robin_ladder"],
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "content-team",
   "approvalState": "draft",
   "lastSmeReviewDate": "2026-07-07"

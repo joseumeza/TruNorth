@@ -11,7 +11,6 @@ export interface StageLayers {
   bg: HTMLElement;
   fx: HTMLElement;
   characters: HTMLElement;
-  avatar: HTMLElement;
   bubbles: HTMLElement;
   hud: HTMLElement;
   overlay: HTMLElement;
@@ -34,8 +33,10 @@ export class Viewport {
     this.root.appendChild(frame);
     mount.appendChild(this.root);
 
-    // Z-order: background → world FX → characters → avatar → bubbles → HUD → overlays (spec §6.1).
-    const layerNames = ['bg', 'fx', 'characters', 'avatar', 'bubbles', 'hud', 'overlay'] as const;
+    // Z-order: background → floor FX → world (characters + avatar, y-sorted) →
+    // bubbles → HUD → overlays (spec §6.1). Avatar and NPCs share the
+    // characters layer so depth follows feet-y in the top-down view.
+    const layerNames = ['bg', 'fx', 'characters', 'bubbles', 'hud', 'overlay'] as const;
     const layers = {} as Record<(typeof layerNames)[number], HTMLElement>;
     for (const name of layerNames) {
       const el = document.createElement('div');

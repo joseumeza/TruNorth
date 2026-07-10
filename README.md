@@ -8,7 +8,7 @@ lightweight runtime, an **AI companion proxied server-side**, and a **frozen ill
 asset pipeline**. Content files drive scene layout, decision points, scoring, companion
 prompts, consequences, and repair actions.
 
-> **Status:** MVP playable end-to-end — two chapters (incl. the showcase golden path
+a> **Status:** MVP playable end-to-end — two chapters (incl. the showcase golden path
 > W1→W4), scene engine, five-layer companion safety pipeline, offline demo mode, local
 > saves, onboarding, parent gate. Art is placeholder SVG. See [`product.md`](./product.md)
 > for exactly what is built right now.

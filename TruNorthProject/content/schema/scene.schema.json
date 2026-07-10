@@ -13,6 +13,12 @@
     "background": { "type": "string" },
     "narration": { "type": "string", "maxLength": 400 },
     "avatarStart": { "$ref": "#/definitions/position" },
+    "tileMap": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": { "type": "string", "pattern": "^[#.]{16}$" }
+    },
     "characters": {
       "type": "array",
       "items": {

@@ -17,6 +17,7 @@ import { expressionForBand } from '../types';
 import type { ContentLibrary } from '../content/ContentLibrary';
 import { SceneGraph } from './SceneGraph';
 import { MovementController } from './MovementController';
+import { TileMap } from './TileMap';
 import { aabbOverlap, avatarBox, boundsToBox, collectibleBox } from './CollisionSystem';
 import { applyMeterDeltas, appendDecisionEvent, resolveConsequence } from './DecisionResolver';
 import { getResidue, residueExpression, setResidue } from './EmotionalResidue';
@@ -128,9 +129,10 @@ export class SceneEngine {
     });
     this.applySparkGates();
 
+    this.movement.setTileMap(this.scene.tileMap ? new TileMap(this.scene.tileMap) : TileMap.openRoom());
     const [ax, ay] = this.scene.avatarStart ?? [300, 840];
     this.movement.setPosition(ax, ay);
-    this.deps.renderer.setAvatarPosition(ax, ay, 'right', false);
+    this.deps.renderer.setAvatarPosition(ax, ay, 'down', false);
 
     this.state.eventLog.push({ ts: Date.now(), type: 'scene_enter', sceneId });
     await this.deps.store.save(this.state);
@@ -396,15 +398,16 @@ export class SceneEngine {
 
     let done = 0;
     const startY = this.movement.y;
+    this.deps.renderer.setAvatarClimbing(true);
     await new Promise<void>((resolve) => {
       const label = () => (btn.textContent = `${climb.tapLabel} (${done}/${climb.taps})`);
       label();
       btn.addEventListener('click', () => {
         done += 1;
         this.deps.audio.play('pickup');
-        // Avatar visibly climbs with each tap.
+        // Avatar visibly climbs with each tap, facing away toward the rungs.
         const y = startY - done * 90;
-        this.deps.renderer.setAvatarPosition(this.movement.x, y, 'right', true);
+        this.deps.renderer.setAvatarPosition(this.movement.x, y, 'up', true);
         label();
         if (done >= climb.taps) {
           btn.disabled = true;
@@ -413,6 +416,7 @@ export class SceneEngine {
       });
       btn.focus();
     });
+    this.deps.renderer.setAvatarClimbing(false);
     overlay.remove();
     await this.completeChapter();
   }

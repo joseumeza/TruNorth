@@ -5,18 +5,29 @@
   "movementTier": "B",
   "background": "bg_clearing_day",
   "narration": "A sunny clearing opens up around a tall treehouse. Someone near the ladder looks like they could use a friend. Use the arrow keys or WASD to explore.",
-  "avatarStart": [300, 840],
+  "avatarStart": [300, 540],
+  "tileMap": [
+    "################",
+    "#......##......#",
+    "#......##......#",
+    "#..............#",
+    "#...............",
+    "#..#.......#...#",
+    "#..............#",
+    "#..............#",
+    "################"
+  ],
   "characters": [
-    { "assetRef": "char_companion_fox", "id": "companion", "position": [480, 880] }
+    { "assetRef": "char_companion_fox", "id": "companion", "position": [540, 450] }
   ],
   "triggers": [
-    { "id": "to_clearing", "bounds": [1720, 600, 200, 400], "action": "goToScene", "target": "w2" }
+    { "id": "to_clearing", "bounds": [1800, 480, 120, 120], "action": "goToScene", "target": "w2" }
   ],
   "collectibles": [
-    { "id": "spark_w1_1", "assetRef": "collectible_spark", "position": [1050, 900], "kind": "kindness_spark" }
+    { "id": "spark_w1_1", "assetRef": "collectible_spark", "position": [1020, 810], "kind": "kindness_spark" }
   ],
   "decisionPoints": [],
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "content-team",
   "approvalState": "draft",
   "lastSmeReviewDate": "2026-07-07"

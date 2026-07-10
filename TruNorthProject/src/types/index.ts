@@ -32,6 +32,9 @@ export type ThemeSensitivity = 'standard' | 'sensitive';
 export type ResidueLevel = 'trusting' | 'neutral' | 'shaken';
 export type RepairActionId = 'walk-back' | 'offer-hand' | 'sit-with' | 'tap-kind-action';
 export type MovementTier = 'A' | 'B';
+
+/** Avatar facing in the 3/4 top-down view (Pokémon-style rooms). */
+export type Facing = 'up' | 'down' | 'left' | 'right';
 export type ExpressionState = 'neutral' | 'worried_sad' | 'excited_glow';
 
 export type SafetyFlag =
@@ -119,6 +122,8 @@ export interface Scene extends ContentGovernance {
   background: string; // assetRef, never a file path (spec §2.2)
   narration?: string;
   avatarStart?: [number, number];
+  /** 9 rows × 16 chars ('#' blocked / '.' walkable) of 120 px collision tiles. */
+  tileMap?: string[];
   characters: SceneCharacter[];
   triggers: SceneTrigger[];
   collectibles: SceneCollectible[];
