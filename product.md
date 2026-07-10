@@ -62,8 +62,10 @@ These rules exist so `product.md` stays trustworthy and consistent across every 
 | Product | TruNorth — choice-driven social-emotional learning (SEL) narrative for ages 5–15 |
 | Project root | `TruNorthProject/` |
 | Spec source of truth | `TruNorthTechnicalSpecification.md` (v3.0, build-ready) |
-| Overall implementation status | **⬜ Scaffolding only** — full folder tree exists; all source, content, schema, and doc files are currently empty (0 bytes). No functionality implemented yet. |
-| Last updated | 2026-07-01 |
+| Overall implementation status | **✅ MVP playable end-to-end.** Two chapters (Ch.1 meadow + Ch.2 showcase golden path W1→W4), scene engine, five-layer companion safety pipeline, offline demo mode, local persistence, onboarding, parent gate + trust screen, tests (70 unit/integration + 19 red-team + e2e golden path) all green. Art is **placeholder SVG** (not the frozen style). EXT items (remote store, parent dashboard, voice, enterprise) not built. |
+| Toolchain | Node 22 (`.nvmrc`), Vite 6, TypeScript 5, Vitest 3, Playwright, Ajv, tsx — see ADR-001 for the Vite 6-vs-8 deviation |
+| Quick test | `cd TruNorthProject && npm install && npm run demo` → http://localhost:4173/?demo=1 |
+| Last updated | 2026-07-07 |
 
 ---
 
@@ -71,46 +73,48 @@ These rules exist so `product.md` stays trustworthy and consistent across every 
 
 ```
 TruNorthProject/
-├── api/                       # Serverless functions (Claude proxy, health, progress)
-│   ├── auth/                  # (empty)
-│   ├── companion/route.ts     # ⬜ AI companion proxy endpoint
-│   ├── health/route.ts        # ⬜ Health-check endpoint
-│   └── progress/[childId].ts  # ⬜ [EXT] Remote progress endpoint
-├── assets-src/                # Source art & provenance (pre-build)
-│   ├── art-style-guide.md     # ⬜
-│   ├── manifest.yaml          # ⬜ Source asset manifest
-│   └── provenance-ledger.csv  # ⬜ Asset provenance/licensing ledger
-├── content/                   # Game content, schemas, rubrics
-│   ├── chapters/ch1/          # ⬜ Chapter 1 scene data
-│   ├── chapters/ch2/          # ⬜ Chapter 2 scene data
-│   ├── demo/showcase.bundle.json      # ⬜ Offline demo bundle
-│   ├── fallbacks/companion-fallbacks.json  # ⬜ Companion fallback lines
-│   ├── rubrics/               # ⬜ [EXT] SME-supplied scoring rubrics
-│   └── schema/                # ⬜ JSON schemas (scene, game-state, decision-point, companion-response)
-├── docs/                      # Runbooks, ADRs, privacy docs
-│   ├── adr/                   # ⬜ Architecture Decision Records
-│   ├── privacy/               # ⬜ Privacy documentation
-│   ├── demo-runbook.md        # ⬜
-│   └── incident-response.md   # ⬜
-├── public/                    # Built static assets served to browser
-│   └── assets/                # audio/ backgrounds/ characters/ fx/ ui/ + manifest.json  (⬜)
-├── scripts/                   # Build/validation/audit tooling
-│   ├── audit-bundle-size.ts   # ⬜
-│   ├── build-asset-manifest.ts# ⬜
-│   ├── red-team-suite.ts      # ⬜
-│   └── validate-content.ts    # ⬜
-├── src/                       # Application source
-│   ├── main.ts                # ⬜ App entry point
-│   ├── audio/AudioManager.ts  # ⬜ Audio & feedback
-│   ├── companion/             # ⬜ Companion client (input freeze, thinking cue)
-│   ├── engine/                # ⬜ Scene engine, graph, resolver, movement, collision, residue
-│   ├── input/                 # ⬜ Keyboard/mouse input
-│   ├── render/                # ⬜ DOM/Canvas rendering
-│   ├── safety/OutputSanitizer.ts  # ⬜ Output safety sanitization
-│   ├── store/                 # ⬜ ProgressStore (local MVP / remote EXT)
-│   ├── types/                 # ⬜ Shared TypeScript types
-│   └── ui/                    # ⬜ HUD, overlays, parent gate
-└── tests/                     # unit/ integration/ e2e/ red-team/  (⬜)
+├── api/                       # Serverless functions (Vercel Node runtime)
+│   ├── _lib/                  # ✅ Shared companion pipeline (filters, prompt, validate, fallbacks, pipeline)
+│   ├── auth/                  # ⬜ [EXT] parent auth (empty)
+│   ├── companion/route.ts     # ✅ POST /api/companion proxy
+│   ├── health/route.ts        # ✅ Health check
+│   └── progress/[childId].ts  # 🟨 [EXT] stub returning 501
+├── assets-src/                # ✅ manifest.yaml, provenance-ledger.csv, art-style-guide.md (placeholder era)
+├── content/
+│   ├── chapters/ch1/          # ✅ chapter.json, c1s1/c1s2 scenes, decision-points.json
+│   ├── chapters/ch2/          # ✅ chapter.json, w1–w4 scenes (golden path), decision-points.json
+│   ├── demo/showcase.bundle.json      # ✅ Canned companion responses (all dp × band)
+│   ├── fallbacks/companion-fallbacks.json  # ✅ Global + per-dp fallback lines
+│   ├── rubrics/               # ⬜ [EXT] SME-supplied rubrics (empty)
+│   └── schema/                # ✅ scene / decision-point / game-state / companion-response JSON Schemas
+├── docs/
+│   ├── adr/                   # ✅ ADR-001…006
+│   ├── privacy/data-classification.md  # ✅
+│   ├── demo-runbook.md        # ✅
+│   └── incident-response.md   # ✅ (skeleton; SME/counsel contacts TBD)
+├── public/assets/             # ✅ Placeholder SVGs (backgrounds/characters/fx/ui) + generated manifest.json
+├── scripts/                   # ✅ validate-content, build-asset-manifest, red-team-suite, audit-bundle-size
+├── src/
+│   ├── main.ts                # ✅ Boot + rAF game loop
+│   ├── styles.css             # ✅ Viewport, HUD, child/parent palettes, a11y
+│   ├── audio/AudioManager.ts  # ✅ WebAudio-synthesized SFX + global mute
+│   ├── companion/             # ✅ CompanionClient (live), DemoCompanionClient, typedRubric
+│   ├── content/               # ✅ ContentLibrary (glob-imported content), fallbackLines
+│   ├── engine/                # ✅ SceneEngine, SceneGraph, DecisionResolver, MovementController,
+│   │                          #    CollisionSystem, EmotionalResidue
+│   ├── input/InputController.ts   # ✅ Keyboard + freeze/release + pause
+│   ├── render/                # ✅ Viewport, SceneRenderer, BubbleManager, ParticleSystem, AvatarSprite
+│   ├── safety/OutputSanitizer.ts  # ✅ Client-side output sanitization
+│   ├── store/                 # ✅ LocalProgressStore, DemoProgressStore, GameStateFactory
+│   ├── types/index.ts         # ✅ Shared contracts + UI tokens + code gates
+│   └── ui/                    # ✅ MeterHUD, ChoicePanel, ParentGate, TrustScreen, OnboardingFlow, Overlays
+├── tests/
+│   ├── unit/                  # ✅ 6 suites (resolver, graph, bubbles, store, collision, residue, safety)
+│   ├── integration/           # ✅ pipeline + companion clients
+│   ├── e2e/golden-path.spec.ts# ✅ Offline demo golden path (Playwright)
+│   └── red-team/              # ✅ cases.json (19) + Vitest wrapper
+├── index.html · vite.config.ts · tsconfig.json · playwright.config.ts
+├── package.json · .nvmrc (22) · .env.example · .gitignore
 ```
 
 > Update this tree whenever directories or top-level files change.
@@ -119,66 +123,146 @@ TruNorthProject/
 
 ## 3. Implemented components
 
-> As real code lands, document it here. Each subsystem gets a subsection. Keep inline
-> entries short; link out to `TruNorthContextFiles/` when detail grows (see rule 5).
-> **Nothing below is implemented yet** — all entries are placeholders reflecting the
-> current empty scaffolding.
+> Inline entries stay short; deep walkthroughs live in `TruNorthContextFiles/` (Section 4).
 
 ### 3.1 Application entry (`src/main.ts`)
-⬜ Not implemented.
+✅ Implemented. Detects demo mode (`?demo` / `VITE_DEMO_MODE`), fetches the asset
+manifest, wires stores/clients (demo → in-memory + canned; live → localStorage + proxy),
+restores a save or runs onboarding (demo auto-profiles into ch2), starts `SceneEngine`
+and the rAF loop. Boot walkthrough: [engine-runtime.md](./TruNorthContextFiles/engine-runtime.md).
 
 ### 3.2 Scene engine (`src/engine/`)
-⬜ Not implemented. *(Planned modules: `SceneEngine`, `SceneGraph`, `DecisionResolver`,
-`MovementController`, `CollisionSystem`, `EmotionalResidue` — see spec §5.)*
+✅ Implemented — full lifecycle per spec §5.3; deep-dive in
+[engine-runtime.md](./TruNorthContextFiles/engine-runtime.md).
+- `SceneEngine` — orchestrator: scene load/transition, Tier A click zones / Tier B collision,
+  decision → companion → consequence flow, repairs (walk-back + 3 gestures), fx mapping,
+  meter juice, W4 3-tap climb, chapter completion → celebration → parent gate → next chapter,
+  distress overlay, pause, resume line, immediate auto-save.
+- `SceneGraph` — `nextSceneId()` from consequences; `reachableFrom()` BFS (used by tests/CI).
+- `DecisionResolver` — `resolveConsequence()`, `applyMeterDeltas()` (fill wraps to levels),
+  `appendDecisionEvent()`, companion leveling at 2/4 strong choices.
+- `MovementController` — WASD/arrows at 420 px/s, walk-bounds clamp, facing/idle state.
+- `CollisionSystem` — AABB helpers: `aabbOverlap`, `avatarBox` (feet region), `collectibleBox`.
+- `EmotionalResidue` — per-chapter per-NPC `trusting/neutral/shaken`; nudges NPC default
+  expressions; never blocks progress.
 
 ### 3.3 Rendering (`src/render/`)
-⬜ Not implemented.
+✅ Implemented — details in [engine-runtime.md](./TruNorthContextFiles/engine-runtime.md).
+- `Viewport` — 16:9 letterboxed 1920×1080 stage, uniform scale, 7 z-ordered layers.
+- `SceneRenderer` — manifest-driven `<img>` sprites (feet-center anchors), expression CSS
+  states, worry-cloud variants, runtime-composed avatar (5×5 skin/hair inline SVG).
+- `BubbleManager` — anchored bubbles, char-by-char reveal + tap-to-complete, 120-char
+  split sequencing, in-character thinking cue (300 ms), narration bar. Exports `splitBubbleText`.
+- `ParticleSystem` — ≤12 rAF Bézier particles to the meter; disabled by reduced-motion.
 
-### 3.4 Input (`src/input/`)
-⬜ Not implemented.
+### 3.4 Input (`src/input/InputController.ts`)
+✅ Implemented. Key mapping (WASD/arrows) polled by the loop; ignores form fields;
+`freeze()`/`release()` for §5.4 input freeze; Escape → pause callback.
 
 ### 3.5 UI & parent surfaces (`src/ui/`)
-⬜ Not implemented.
+✅ Implemented.
+- `MeterHUD` — meters (icon + animated fill, ARIA progressbar, numbers only for 11–15),
+  brownie counter, demo pill, mute toggle, `meterAnchor()` for particles.
+- `ChoicePanel` — choice cards + scoped typed field (age-gated), `pivotLockMs` lock,
+  age-banded hit targets/fonts, keyboard operable.
+- `ParentGate` — PIN (SHA-256 via `hashPin`) or math challenge; 3 fails → 45 s cooldown;
+  grown-up palette; trust-screen link.
+- `TrustScreen` — static plain-language safety/data summary (spec §13.3).
+- `OnboardingFlow` — parent step (age band, optional PIN, consent summary) → companion
+  picker + validated naming → 5×5 avatar → baseline strength seed.
+- `Overlays` — celebration (recap + sparks), pause (resume/erase), repair gestures,
+  walk-back banner, distress support surface.
+- Not built: watch/co-play mode (spec §13.2) — ⬜.
 
 ### 3.6 AI companion client (`src/companion/`)
-⬜ Not implemented.
+✅ Implemented — see [safety-companion-pipeline.md](./TruNorthContextFiles/safety-companion-pipeline.md).
+- `CompanionClient` — POST `/api/companion`, 8 s timeout, in-character client fallback.
+- `DemoCompanionClient` — zero-network bundle lookup `{scene}:{dp}:{band}`; local typed
+  rubric; distress protocol enforced offline.
+- `typedRubric.scoreTypedInput` — demo-mode heuristic (strong/partial/poor).
 
 ### 3.7 Safety — output sanitizer (`src/safety/OutputSanitizer.ts`)
-⬜ Not implemented.
+✅ Implemented. `sanitize()`/`sanitizeAll()`: control-char strip, 360-char cap, banned
+patterns (markup, links, clinical, PII-solicitation, secrecy) → approved substitute line.
+All child-facing text renders via `textContent`.
 
 ### 3.8 Progress store (`src/store/`)
-⬜ Not implemented.
+✅ Implemented (MVP scope).
+- `LocalProgressStore` — `trunorth_save_v1` in localStorage; immediate saves; event log
+  pruned to 200; corrupt-save tolerance; injectable storage for tests.
+- `DemoProgressStore` — in-memory, reload = reset.
+- `GameStateFactory.createInitialState()` — canonical GameState with all 7 meters +
+  baseline-strength seed.
+- `RemoteProgressStore` — ⬜ [EXT], not built (ADR-003).
 
 ### 3.9 Audio (`src/audio/AudioManager.ts`)
-⬜ Not implemented.
+✅ Implemented. WebAudio-synthesized SFX (no files): pickup chime, harp swell (strong),
+soft thud (poor), thinking bloop, celebration; lazy context; global mute; never the
+sole feedback channel.
 
-### 3.10 Shared types (`src/types/`)
-⬜ Not implemented.
+### 3.10 Shared types (`src/types/index.ts`)
+✅ Implemented. All contracts from spec §9–§12 (GameState, Scene, DecisionPoint,
+Consequence, EmotionalArc, CompanionRequest/Response, ProgressStore, manifest,
+telemetry) + `UI_TOKENS` (age-banded), `canUsePlayfulExternalization()` gate,
+`expressionForBand()` state machine.
 
 ### 3.11 Serverless API (`api/`)
-⬜ Not implemented. *(Endpoints: `companion/route.ts`, `health/route.ts`,
-`progress/[childId].ts` [EXT].)*
+✅ Implemented (live path) — deep-dive in
+[safety-companion-pipeline.md](./TruNorthContextFiles/safety-companion-pipeline.md).
+- `_lib/pipeline.ts` — `runCompanionPipeline()`: the five-layer safety stack (input filter →
+  scoped prompt → Claude call w/ 8 s timeout + 1 retry → strict validation + 0.55
+  confidence floor → output filter), authored-band authority for choices, fallback
+  library on every failure path; injectable model for tests.
+- `_lib/filters.ts` — `inputFilter`, `outputFilter`, `splitCompanionLine`.
+- `_lib/prompt.ts` — versioned scoped system prompt builder.
+- `_lib/validate.ts` — strict JSON/enum validation of model output.
+- `_lib/fallbacks.ts` — fallback-library loader (`getFallbackLine`).
+- `companion/route.ts` — Vercel handler; never surfaces raw errors.
+- `health/route.ts` — liveness probe. `progress/[childId].ts` — 🟨 [EXT] 501 stub.
+- The same pipeline is served in dev by a Vite middleware (`vite.config.ts`).
 
 ### 3.12 Content & schemas (`content/`)
-⬜ Not implemented. *(Schemas, chapter scenes, demo bundle, fallbacks.)*
+✅ Implemented.
+- Schemas: `scene`, `decision-point` (requires complete 4-field `emotionalArc` +
+  governance fields), `game-state`, `companion-response`.
+- Ch.1 "The Meadow" (ages 5–7, Tier A): c1s1 → `dp_leftout_swing` (3 options,
+  sit-with repair) → c1s2 → chapter complete.
+- Ch.2 "The Clearing — Worry & Brave" (8–10, Tier B): showcase golden path
+  w1 → w2 (`dp_robin_ladder`, choice+typed, walk-back repair) → w3a/w3b → w4 3-tap climb.
+- `fallbacks/companion-fallbacks.json` — global + every dp × band + timeout (CI-enforced).
+- `demo/showcase.bundle.json` — canned responses for every dp × band (CI-enforced).
+- All content `approvalState: "draft"` — **SME review pending**.
 
 ### 3.13 Assets (`assets-src/`, `public/assets/`)
-⬜ Not implemented.
+🟨 Partial. Pipeline fully works (manifest.yaml → validated `manifest.json`; provenance
+ledger rows for all 12 assets), but the art itself is **hand-authored placeholder SVG**,
+not the frozen "clean cartoon" style (see `assets-src/art-style-guide.md`). Audio is
+synthesized, no audio files.
 
 ### 3.14 Build & tooling scripts (`scripts/`)
-⬜ Not implemented. *(`validate-content`, `build-asset-manifest`, `red-team-suite`,
-`audit-bundle-size`.)*
+✅ Implemented.
+- `validate-content.ts` — schema validation, assetRef existence, routing integrity +
+  reachability BFS, fallback coverage, demo-bundle coverage/contract. Exits non-zero on error.
+- `build-asset-manifest.ts` — YAML → `public/assets/manifest.json`; fails on missing files.
+- `red-team-suite.ts` — 19 adversarial cases through the real pipeline with a mock model.
+- `audit-bundle-size.ts` — dist walk vs 15 MB budget (currently ~0.09 MB).
 
 ### 3.15 Tests (`tests/`)
-⬜ Not implemented. *(unit / integration / e2e / red-team.)*
+✅ Implemented — all green.
+- Unit (6 suites / 45 tests): resolver + meters + leveling, graph routing + reachability,
+  bubble splitting, local store (round-trip, corrupt, prune, clear), collision + movement,
+  residue, filters/validators/sanitizer/code gates.
+- Integration: pipeline (confidence floor, band authority, retry, no-key, output filter,
+  distress) + companion clients (live fallback, demo bundle/rubric/distress).
+- Red-team: 19 cases (Vitest wrapper + standalone harness).
+- E2E (Playwright): offline demo golden path W1→W4 incl. climb + celebration, asserting
+  **zero `/api` requests**. Runs at the 1366×768 Chromebook profile.
 
 ---
 
 ## 4. Context files index (`TruNorthContextFiles/`)
 
-Detailed, offloaded documentation lives here and is linked from the sections above.
-None yet — this table grows as subsystems become complex enough to warrant their own file.
-
 | Context file | Documents | Summary |
 |---|---|---|
-| _(none yet)_ | — | — |
+| [engine-runtime.md](./TruNorthContextFiles/engine-runtime.md) | `src/engine/*`, `src/render/*`, `src/input/*`, `src/main.ts` | Boot sequence, scene lifecycle phase machine, decision/repair/chapter flows, renderer + bubble + particle internals |
+| [safety-companion-pipeline.md](./TruNorthContextFiles/safety-companion-pipeline.md) | `api/_lib/*`, `api/companion/route.ts`, `src/companion/*`, `src/safety/*`, fallback library | Five-layer safety stack layer by layer, fallback coverage rules, demo client behavior, red-team coverage |

@@ -1,0 +1,34 @@
+{
+  "name": "trunorth",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run build:manifest && vite build",
+    "preview": "vite preview --port 4173",
+    "demo": "npm run build && vite preview --port 4173",
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit",
+    "build:manifest": "tsx scripts/build-asset-manifest.ts",
+    "validate:content": "tsx scripts/validate-content.ts",
+    "test:unit": "vitest run tests/unit tests/integration tests/red-team",
+    "test:watch": "vitest tests/unit tests/integration tests/red-team",
+    "test:red-team": "tsx scripts/red-team-suite.ts",
+    "test:e2e": "playwright test",
+    "audit:bundle": "tsx scripts/audit-bundle-size.ts"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.0",
+    "@types/node": "^22.0.0",
+    "ajv": "^8.17.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.0",
+    "vite": "^6.0.0",
+    "vitest": "^3.0.0",
+    "yaml": "^2.5.0"
+  }
+}

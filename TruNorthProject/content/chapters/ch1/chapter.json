@@ -1,0 +1,10 @@
+{
+  "chapterId": "ch1",
+  "title": "The Meadow — A New Friend",
+  "ageBand": "5-7",
+  "movementTier": "A",
+  "inputProfile": "keyboard_mouse",
+  "entrySceneId": "c1s1",
+  "nextChapterId": "ch2",
+  "visibleMeters": ["empathy", "calm", "courage"]
+}

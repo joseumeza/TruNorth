@@ -1,0 +1,13 @@
+assetRef,file,source,sourcePrompt,generationDate,license,editor,approvalState,replacementPolicy
+bg_meadow_day,backgrounds/bg_meadow_day.svg,hand-authored placeholder SVG,n/a,2026-07-07,project-internal,claude-code,placeholder,replace with frozen clean-cartoon art before showcase
+bg_clearing_day,backgrounds/bg_clearing_day.svg,hand-authored placeholder SVG,n/a,2026-07-07,project-internal,claude-code,placeholder,replace with frozen clean-cartoon art before showcase
+bg_treehouse_rung,backgrounds/bg_treehouse_rung.svg,hand-authored placeholder SVG,n/a,2026-07-07,project-internal,claude-code,placeholder,replace with frozen clean-cartoon art before showcase
+char_robin,characters/robin.svg,hand-authored placeholder SVG,n/a,2026-07-07,project-internal,claude-code,placeholder,replace with frozen clean-cartoon art before showcase
+char_milo,characters/milo.svg,hand-authored placeholder SVG,n/a,2026-07-07,project-internal,claude-code,placeholder,replace with frozen clean-cartoon art before showcase
+char_grownup,characters/grownup.svg,hand-authored placeholder SVG,n/a,2026-07-07,project-internal,claude-code,placeholder,replace with frozen clean-cartoon art before showcase
+char_companion_fox,characters/companion_fox.svg,hand-authored placeholder SVG,n/a,2026-07-07,project-internal,claude-code,placeholder,replace with frozen clean-cartoon art before showcase
+char_companion_sprite,characters/companion_sprite.svg,hand-authored placeholder SVG,n/a,2026-07-07,project-internal,claude-code,placeholder,replace with frozen clean-cartoon art before showcase
+char_avatar_base,characters/avatar_base.svg,hand-authored placeholder SVG,n/a,2026-07-07,project-internal,claude-code,placeholder,runtime avatar is generated SVG; base kept for manifest completeness
+fx_worry_cloud,fx/worry_cloud.svg,hand-authored placeholder SVG,n/a,2026-07-07,project-internal,claude-code,placeholder,replace with frozen clean-cartoon art before showcase
+collectible_spark,ui/spark.svg,hand-authored placeholder SVG,n/a,2026-07-07,project-internal,claude-code,placeholder,replace with frozen clean-cartoon art before showcase
+ui_celebration_worry_brave,ui/celebration_worry_brave.svg,hand-authored placeholder SVG,n/a,2026-07-07,project-internal,claude-code,placeholder,replace with frozen clean-cartoon art before showcase

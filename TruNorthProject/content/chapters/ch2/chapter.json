@@ -1,0 +1,10 @@
+{
+  "chapterId": "ch2",
+  "title": "The Clearing — Worry & Brave",
+  "ageBand": "8-10",
+  "movementTier": "B",
+  "inputProfile": "keyboard_mouse",
+  "entrySceneId": "w1",
+  "nextChapterId": null,
+  "visibleMeters": ["worry_brave", "empathy", "courage"]
+}

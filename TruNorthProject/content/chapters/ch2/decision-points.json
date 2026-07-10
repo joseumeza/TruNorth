@@ -1,0 +1,82 @@
+{
+  "dp_robin_ladder": {
+    "id": "dp_robin_ladder",
+    "prompt": "Robin is scared to climb. What do you do?",
+    "inputMode": "both",
+    "themeSensitivity": "standard",
+    "selSkills": ["worry_brave", "empathy"],
+    "pivotLockMs": 2000,
+    "options": [
+      {
+        "id": "opt_a",
+        "label": "It's okay to feel scared. Want to try just the first step together?",
+        "icon": "icon_helping_hand",
+        "selScore": "strong",
+        "consequenceRef": "cons_w2_strong"
+      },
+      {
+        "id": "opt_b",
+        "label": "You could watch us from down here if you want.",
+        "icon": "icon_watch",
+        "selScore": "partial",
+        "consequenceRef": "cons_w2_partial"
+      },
+      {
+        "id": "opt_c",
+        "label": "Come on, just climb! It's not even scary.",
+        "icon": "icon_hurry",
+        "selScore": "poor",
+        "consequenceRef": "cons_w2_poor"
+      }
+    ],
+    "typedRubricRef": "rubric_worry_brave_v1",
+    "companionContext": {
+      "situation": "Robin frozen at ladder, worry cloud visible",
+      "npcEmotion": "anxiety",
+      "ageBand": "8-10"
+    },
+    "consequences": [
+      {
+        "band": "strong",
+        "sceneId": "w3a",
+        "fx": ["worry_cloud_shrink"],
+        "meterDeltas": { "worry_brave": 1.0, "empathy": 0.25 },
+        "repairAction": null,
+        "residue": { "robin": "trusting" }
+      },
+      {
+        "band": "partial",
+        "sceneId": "w3b",
+        "fx": ["worry_cloud_soften"],
+        "meterDeltas": { "worry_brave": 0.4 },
+        "repairAction": null,
+        "residue": { "robin": "neutral" }
+      },
+      {
+        "band": "poor",
+        "sceneId": "w2",
+        "fx": ["worry_cloud_darken"],
+        "repairAction": "walk-back",
+        "residue": { "robin": "shaken" }
+      }
+    ],
+    "emotionalArc": {
+      "childStateEntering": "curious, slightly concerned",
+      "childStateExiting": {
+        "strong": "empowered, proud, connected",
+        "partial": "uncertain, nudged toward reflection",
+        "poor": "guilty-but-safe (shame interrupted immediately)"
+      },
+      "companionStance": {
+        "strong": "warm, upright, light glow",
+        "partial": "leaned-in, soft-voiced, waits for child",
+        "poor": "kneels-to-child-level, soft-eyes, no-glow; interposes"
+      },
+      "recoveryCadence": "poor → companion intervenes before dead air → touch + one line → repairAction opens"
+    },
+    "version": "1.0.0",
+    "owner": "content-team",
+    "approvalState": "draft",
+    "lastSmeReviewDate": "2026-07-07"
+  }
+}

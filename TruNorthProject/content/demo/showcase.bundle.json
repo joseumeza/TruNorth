@@ -1,0 +1,62 @@
+{
+  "version": "1.0.0",
+  "owner": "content-team",
+  "approvalState": "draft",
+  "lastSmeReviewDate": "2026-07-07",
+  "responses": {
+    "w2:dp_robin_ladder:strong": {
+      "scoreBand": "strong",
+      "skill": "worry_brave",
+      "matchedCriterion": "names_feeling_and_supports",
+      "confidence": 0.95,
+      "companionLine": "You said the scared part out loud — that helps it feel smaller. Robin heard you.",
+      "redirect": false,
+      "safetyFlag": "none"
+    },
+    "w2:dp_robin_ladder:partial": {
+      "scoreBand": "partial",
+      "skill": "worry_brave",
+      "matchedCriterion": "kind_but_avoids_feeling",
+      "confidence": 0.95,
+      "companionLine": "That was kind. I wonder what would help Robin feel brave enough to try just one step?",
+      "redirect": false,
+      "safetyFlag": "none"
+    },
+    "w2:dp_robin_ladder:poor": {
+      "scoreBand": "poor",
+      "skill": "worry_brave",
+      "matchedCriterion": "dismisses_feeling",
+      "confidence": 0.95,
+      "companionLine": "Whoa — Robin's worry cloud got bigger. It's okay. Let's walk back and try a gentler way.",
+      "redirect": false,
+      "safetyFlag": "none"
+    },
+    "c1s1:dp_leftout_swing:strong": {
+      "scoreBand": "strong",
+      "skill": "empathy",
+      "matchedCriterion": "includes_other",
+      "confidence": 0.95,
+      "companionLine": "You saw Milo all alone and you did something about it. That's what a good friend does!",
+      "redirect": false,
+      "safetyFlag": "none"
+    },
+    "c1s1:dp_leftout_swing:partial": {
+      "scoreBand": "partial",
+      "skill": "empathy",
+      "matchedCriterion": "acknowledges_from_distance",
+      "confidence": 0.95,
+      "companionLine": "A wave is a nice start! I bet going a little closer would make Milo smile even bigger.",
+      "redirect": false,
+      "safetyFlag": "none"
+    },
+    "c1s1:dp_leftout_swing:poor": {
+      "scoreBand": "poor",
+      "skill": "empathy",
+      "matchedCriterion": "ignores_other",
+      "confidence": 0.95,
+      "companionLine": "Hmm, Milo still looks lonely. Want to sit with him for a moment? I'll come too.",
+      "redirect": false,
+      "safetyFlag": "none"
+    }
+  }
+}

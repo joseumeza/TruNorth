@@ -1,0 +1,28 @@
+{
+  "version": "1.0.0",
+  "owner": "safety-sme",
+  "approvalState": "draft",
+  "lastSmeReviewDate": "2026-07-07",
+  "global": {
+    "timeout": "Hmm, I was thinking so hard my thoughts got tangled! Let's look at the choices together.",
+    "safety_redirect": "Let's keep our adventure about what's happening right here. What do you want to do about our friend?",
+    "distress": "That sounds like a really big feeling — bigger than our adventure. The bravest thing anyone can do is tell a grown-up they trust, like a parent or a teacher. I'll stay right here with you.",
+    "model_unavailable": "My magic thinking cap is resting right now, but I saw what you did — let's keep going together.",
+    "resume": "You're back! I saved our spot. Ready to keep going?",
+    "error": "Whoops, a little hiccup on my end — not yours! Let's try that again together."
+  },
+  "decisionPoints": {
+    "dp_robin_ladder": {
+      "strong": "You said the scared part out loud — that helps it feel smaller. Robin heard you.",
+      "partial": "That was kind. I wonder what would help Robin feel brave enough to try one step?",
+      "poor": "Whoa — Robin's worry cloud got bigger. It's okay, we can walk back and try a gentler way.",
+      "timeout": "I'm still thinking about Robin's worry cloud… what matters is you're here for Robin."
+    },
+    "dp_leftout_swing": {
+      "strong": "You saw Milo all alone and you did something about it. That's what a good friend does!",
+      "partial": "A wave is a nice start! I bet going a little closer would make Milo smile even bigger.",
+      "poor": "Hmm, Milo still looks lonely. Want to sit with him for a moment? I'll come too.",
+      "timeout": "I was watching Milo… the kind thing is noticing when someone is alone."
+    }
+  }
+}

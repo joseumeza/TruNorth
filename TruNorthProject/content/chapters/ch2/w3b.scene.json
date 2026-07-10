@@ -1,0 +1,25 @@
+{
+  "id": "w3b",
+  "chapterId": "ch2",
+  "order": 3,
+  "movementTier": "B",
+  "background": "bg_clearing_day",
+  "narration": "Robin nods a tiny nod but stays by the ladder. The worry cloud is a little smaller. Maybe walking over together would help.",
+  "avatarStart": [700, 860],
+  "characters": [
+    { "assetRef": "char_robin", "id": "robin", "position": [960, 780], "expression": "worried" },
+    { "assetRef": "char_companion_fox", "id": "companion", "position": [760, 860] }
+  ],
+  "fx": [
+    { "assetRef": "fx_worry_cloud", "id": "worry_cloud", "position": [960, 530], "variant": "medium" }
+  ],
+  "triggers": [
+    { "id": "to_ladder", "bounds": [860, 660, 220, 260], "action": "goToScene", "target": "w4" }
+  ],
+  "collectibles": [],
+  "decisionPoints": [],
+  "version": "1.0.0",
+  "owner": "content-team",
+  "approvalState": "draft",
+  "lastSmeReviewDate": "2026-07-07"
+}

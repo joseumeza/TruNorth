@@ -8,9 +8,47 @@ lightweight runtime, an **AI companion proxied server-side**, and a **frozen ill
 asset pipeline**. Content files drive scene layout, decision points, scoring, companion
 prompts, consequences, and repair actions.
 
-> **Status:** Early scaffolding. The full folder tree exists under `TruNorthProject/`;
-> implementation is just beginning. See [`product.md`](./product.md) for exactly what is
-> built right now.
+> **Status:** MVP playable end-to-end — two chapters (incl. the showcase golden path
+> W1→W4), scene engine, five-layer companion safety pipeline, offline demo mode, local
+> saves, onboarding, parent gate. Art is placeholder SVG. See [`product.md`](./product.md)
+> for exactly what is built right now.
+
+---
+
+## Quick start (test it in 2 minutes)
+
+Requires **Node 22+** (`.nvmrc` provided).
+
+```bash
+cd TruNorthProject
+npm install
+npm run demo          # builds + serves the offline showcase
+# open http://localhost:4173/?demo=1
+```
+
+**Demo mode** (`?demo=1`) is the fastest way to play: it skips onboarding, uses canned
+companion lines (zero network), and shows a "Demo Mode" pill. A page reload fully resets it.
+
+**The golden path (~2 min):** click *Continue* on the narration → walk right with
+**arrow keys / WASD** to the next clearing → walk up to **Robin** at the ladder → pick
+**"It's okay to feel scared…"** (Option A) → click through the companion's speech bubble →
+walk right to the ladder → tap **Climb a rung ×3** → celebration 🎉. To see the recovery
+mechanic, pick Option C instead: the worry cloud darkens and you *walk back* to Robin to
+try again — no shame, no dead ends. Press **Escape** to pause.
+
+Other modes and checks:
+
+```bash
+npm run dev            # full experience with onboarding + parent PIN gate (http://localhost:5173)
+                       # add ANTHROPIC_API_KEY to .env.local for live companion scoring;
+                       # without a key the app uses approved fallback lines automatically
+
+npm run test:unit      # 70 unit + integration + red-team tests
+npm run test:red-team  # 19 adversarial safety cases through the real pipeline
+npm run validate:content  # schemas, routing, fallback + demo coverage
+npm run test:e2e       # Playwright golden-path e2e (npx playwright install chromium first)
+npm run build && npm run audit:bundle   # production build + 15 MB budget check
+```
 
 ---
 
@@ -58,7 +96,7 @@ TruNorth/
 │   ├── src/                         # engine, render, input, ui, companion, safety, store, audio, types
 │   ├── tests/                       # unit, integration, e2e, red-team
 │   └── docs/                        # ADRs, privacy docs, runbooks
-├── .github/                         # PR template + product.md-sync workflow
+├── .github/                         # CI workflow, PR template + product.md-sync workflow
 └── .githooks/                       # Shared pre-push reminder (opt-in)
 ```
 

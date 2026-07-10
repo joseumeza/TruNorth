@@ -1,0 +1,80 @@
+{
+  "dp_leftout_swing": {
+    "id": "dp_leftout_swing",
+    "prompt": "Milo is sitting all alone while everyone plays. What do you do?",
+    "inputMode": "choice",
+    "themeSensitivity": "standard",
+    "selSkills": ["empathy", "courage"],
+    "pivotLockMs": 2000,
+    "options": [
+      {
+        "id": "opt_a",
+        "label": "Walk over and ask, \"Want to play with us?\"",
+        "icon": "icon_helping_hand",
+        "selScore": "strong",
+        "consequenceRef": "cons_c1_strong"
+      },
+      {
+        "id": "opt_b",
+        "label": "Wave at Milo from the swings.",
+        "icon": "icon_wave",
+        "selScore": "partial",
+        "consequenceRef": "cons_c1_partial"
+      },
+      {
+        "id": "opt_c",
+        "label": "Keep playing. Milo is probably fine.",
+        "icon": "icon_swing",
+        "selScore": "poor",
+        "consequenceRef": "cons_c1_poor"
+      }
+    ],
+    "companionContext": {
+      "situation": "Milo sits alone under the tree while other kids play on the swings",
+      "npcEmotion": "left out, lonely",
+      "ageBand": "5-7"
+    },
+    "consequences": [
+      {
+        "band": "strong",
+        "sceneId": "c1s2",
+        "fx": ["world_bloom"],
+        "meterDeltas": { "empathy": 1.0, "courage": 0.25 },
+        "repairAction": null,
+        "residue": { "milo": "trusting" }
+      },
+      {
+        "band": "partial",
+        "sceneId": "c1s2",
+        "meterDeltas": { "empathy": 0.4 },
+        "repairAction": null,
+        "residue": { "milo": "neutral" }
+      },
+      {
+        "band": "poor",
+        "sceneId": "c1s1",
+        "fx": ["soft_dim"],
+        "repairAction": "sit-with",
+        "residue": { "milo": "shaken" }
+      }
+    ],
+    "emotionalArc": {
+      "childStateEntering": "playful, noticing someone is alone",
+      "childStateExiting": {
+        "strong": "warm, proud of including a friend",
+        "partial": "kind but unsure, nudged to go closer",
+        "poor": "guilty-but-safe (shame interrupted immediately)"
+      },
+      "companionStance": {
+        "strong": "bouncy, bright, celebrates the invitation",
+        "partial": "encouraging, points gently toward Milo",
+        "poor": "kneels-to-child-level, soft-eyes, no-glow; sits beside the child"
+      },
+      "recoveryCadence": "poor → companion intervenes before dead air → sit-with gesture → re-choice opens"
+    },
+    "version": "1.0.0",
+    "owner": "content-team",
+    "approvalState": "draft",
+    "lastSmeReviewDate": "2026-07-07"
+  }
+}

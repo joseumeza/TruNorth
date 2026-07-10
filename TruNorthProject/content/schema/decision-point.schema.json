@@ -1,0 +1,101 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "trunorth/decision-point.schema.json",
+  "title": "TruNorth DecisionPoint",
+  "type": "object",
+  "required": ["id", "prompt", "inputMode", "themeSensitivity", "selSkills", "companionContext", "consequences", "emotionalArc", "version", "owner", "approvalState", "lastSmeReviewDate"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^dp_[a-z0-9_]+$" },
+    "prompt": { "type": "string", "minLength": 1, "maxLength": 200 },
+    "inputMode": { "enum": ["choice", "typed", "both"] },
+    "themeSensitivity": { "enum": ["standard", "sensitive"] },
+    "selSkills": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "enum": ["empathy", "calm", "courage", "self_worth", "adapting_to_change", "friendship_repair", "worry_brave"] }
+    },
+    "pivotLockMs": { "type": "integer", "minimum": 0, "maximum": 10000 },
+    "options": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "selScore"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "label": { "type": "string", "maxLength": 140 },
+          "icon": { "type": "string" },
+          "selScore": { "enum": ["strong", "partial", "poor"] },
+          "consequenceRef": { "type": "string" }
+        }
+      }
+    },
+    "typedRubricRef": { "type": "string" },
+    "companionContext": {
+      "type": "object",
+      "required": ["situation", "npcEmotion", "ageBand"],
+      "additionalProperties": false,
+      "properties": {
+        "situation": { "type": "string" },
+        "npcEmotion": { "type": "string" },
+        "ageBand": { "enum": ["5-7", "8-10", "11-15"] }
+      }
+    },
+    "consequences": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": ["band", "sceneId"],
+        "additionalProperties": false,
+        "properties": {
+          "band": { "enum": ["strong", "partial", "poor"] },
+          "sceneId": { "type": "string" },
+          "fx": { "type": "array", "items": { "type": "string" } },
+          "meterDeltas": {
+            "type": "object",
+            "additionalProperties": { "type": "number", "minimum": -1, "maximum": 1 }
+          },
+          "repairAction": {
+            "anyOf": [
+              { "enum": ["walk-back", "offer-hand", "sit-with", "tap-kind-action"] },
+              { "type": "null" }
+            ]
+          },
+          "residue": {
+            "type": "object",
+            "additionalProperties": { "enum": ["trusting", "neutral", "shaken"] }
+          }
+        }
+      }
+    },
+    "emotionalArc": {
+      "type": "object",
+      "required": ["childStateEntering", "childStateExiting", "companionStance", "recoveryCadence"],
+      "additionalProperties": false,
+      "properties": {
+        "childStateEntering": { "type": "string" },
+        "childStateExiting": { "$ref": "#/definitions/byBand" },
+        "companionStance": { "$ref": "#/definitions/byBand" },
+        "recoveryCadence": { "type": "string" }
+      }
+    },
+    "version": { "type": "string" },
+    "owner": { "type": "string" },
+    "approvalState": { "enum": ["draft", "sme_review", "approved"] },
+    "lastSmeReviewDate": { "type": "string" }
+  },
+  "definitions": {
+    "byBand": {
+      "type": "object",
+      "required": ["strong", "partial", "poor"],
+      "additionalProperties": false,
+      "properties": {
+        "strong": { "type": "string" },
+        "partial": { "type": "string" },
+        "poor": { "type": "string" }
+      }
+    }
+  }
+}

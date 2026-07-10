@@ -1,0 +1,196 @@
+{
+  "version": "1.0.0",
+  "characters": {
+    "char_companion_fox": {
+      "file": "characters/companion_fox.svg",
+      "width": 160,
+      "height": 160,
+      "anchor": [
+        0.5,
+        1
+      ],
+      "bubbleAnchor": [
+        0.5,
+        0
+      ],
+      "expressions": {
+        "neutral": {
+          "frame": 0
+        },
+        "worried_sad": {
+          "frame": 1
+        },
+        "excited_glow": {
+          "frame": 2,
+          "glow": true
+        }
+      },
+      "levels": {
+        "1": "char_companion_fox",
+        "2": "char_companion_fox",
+        "3": "char_companion_fox"
+      }
+    },
+    "char_companion_sprite": {
+      "file": "characters/companion_sprite.svg",
+      "width": 160,
+      "height": 160,
+      "anchor": [
+        0.5,
+        1
+      ],
+      "bubbleAnchor": [
+        0.5,
+        0
+      ],
+      "expressions": {
+        "neutral": {
+          "frame": 0
+        },
+        "worried_sad": {
+          "frame": 1
+        },
+        "excited_glow": {
+          "frame": 2,
+          "glow": true
+        }
+      },
+      "levels": {
+        "1": "char_companion_sprite",
+        "2": "char_companion_sprite",
+        "3": "char_companion_sprite"
+      }
+    },
+    "char_robin": {
+      "file": "characters/robin.svg",
+      "width": 144,
+      "height": 144,
+      "anchor": [
+        0.5,
+        1
+      ],
+      "bubbleAnchor": [
+        0.5,
+        0
+      ],
+      "expressions": {
+        "neutral": {
+          "frame": 0
+        },
+        "worried": {
+          "frame": 1
+        },
+        "shaky_nod": {
+          "frame": 2
+        },
+        "relieved_grin": {
+          "frame": 3
+        }
+      }
+    },
+    "char_milo": {
+      "file": "characters/milo.svg",
+      "width": 144,
+      "height": 144,
+      "anchor": [
+        0.5,
+        1
+      ],
+      "bubbleAnchor": [
+        0.5,
+        0
+      ],
+      "expressions": {
+        "neutral": {
+          "frame": 0
+        },
+        "worried": {
+          "frame": 1
+        },
+        "relieved_grin": {
+          "frame": 2
+        }
+      }
+    },
+    "char_grownup": {
+      "file": "characters/grownup.svg",
+      "width": 160,
+      "height": 160,
+      "anchor": [
+        0.5,
+        1
+      ],
+      "bubbleAnchor": [
+        0.5,
+        0
+      ],
+      "expressions": {
+        "neutral": {
+          "frame": 0
+        }
+      }
+    },
+    "char_avatar_base": {
+      "file": "characters/avatar_base.svg",
+      "width": 128,
+      "height": 128,
+      "anchor": [
+        0.5,
+        1
+      ],
+      "bubbleAnchor": [
+        0.5,
+        0
+      ],
+      "expressions": {
+        "neutral": {
+          "frame": 0
+        }
+      }
+    }
+  },
+  "backgrounds": {
+    "bg_meadow_day": {
+      "file": "backgrounds/bg_meadow_day.svg",
+      "width": 1920,
+      "height": 1080
+    },
+    "bg_clearing_day": {
+      "file": "backgrounds/bg_clearing_day.svg",
+      "width": 1920,
+      "height": 1080
+    },
+    "bg_treehouse_rung": {
+      "file": "backgrounds/bg_treehouse_rung.svg",
+      "width": 1920,
+      "height": 1080
+    }
+  },
+  "fx": {
+    "fx_worry_cloud": {
+      "file": "fx/worry_cloud.svg",
+      "width": 200,
+      "height": 120,
+      "variants": [
+        "big",
+        "medium",
+        "small",
+        "gone"
+      ]
+    }
+  },
+  "ui": {
+    "ui_celebration_worry_brave": {
+      "file": "ui/celebration_worry_brave.svg",
+      "width": 512,
+      "height": 512
+    }
+  },
+  "collectibles": {
+    "collectible_spark": {
+      "file": "ui/spark.svg",
+      "width": 64,
+      "height": 64
+    }
+  }
+}

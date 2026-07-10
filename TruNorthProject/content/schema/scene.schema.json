@@ -1,0 +1,97 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "trunorth/scene.schema.json",
+  "title": "TruNorth Scene",
+  "type": "object",
+  "required": ["id", "chapterId", "order", "movementTier", "background", "characters", "triggers", "collectibles", "decisionPoints", "version", "owner", "approvalState", "lastSmeReviewDate"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+    "chapterId": { "type": "string" },
+    "order": { "type": "integer", "minimum": 0 },
+    "movementTier": { "enum": ["A", "B"] },
+    "background": { "type": "string" },
+    "narration": { "type": "string", "maxLength": 400 },
+    "avatarStart": { "$ref": "#/definitions/position" },
+    "characters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["assetRef", "id", "position"],
+        "additionalProperties": false,
+        "properties": {
+          "assetRef": { "type": "string" },
+          "id": { "type": "string" },
+          "position": { "$ref": "#/definitions/position" },
+          "expression": { "type": "string" }
+        }
+      }
+    },
+    "triggers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "bounds", "action", "target"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "bounds": { "type": "array", "items": { "type": "number" }, "minItems": 4, "maxItems": 4 },
+          "action": { "enum": ["startDecision", "goToScene", "completeChapter"] },
+          "target": { "type": "string" }
+        }
+      }
+    },
+    "collectibles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "assetRef", "position", "kind"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "assetRef": { "type": "string" },
+          "position": { "$ref": "#/definitions/position" },
+          "kind": { "type": "string" },
+          "gate": { "type": "string" }
+        }
+      }
+    },
+    "fx": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["assetRef", "id", "position"],
+        "additionalProperties": false,
+        "properties": {
+          "assetRef": { "type": "string" },
+          "id": { "type": "string" },
+          "position": { "$ref": "#/definitions/position" },
+          "variant": { "type": "string" }
+        }
+      }
+    },
+    "decisionPoints": { "type": "array", "items": { "type": "string" } },
+    "climb": {
+      "type": "object",
+      "required": ["taps", "prompt", "tapLabel"],
+      "additionalProperties": false,
+      "properties": {
+        "taps": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "prompt": { "type": "string" },
+        "tapLabel": { "type": "string" }
+      }
+    },
+    "version": { "type": "string" },
+    "owner": { "type": "string" },
+    "approvalState": { "enum": ["draft", "sme_review", "approved"] },
+    "lastSmeReviewDate": { "type": "string" }
+  },
+  "definitions": {
+    "position": {
+      "type": "array",
+      "items": { "type": "number", "minimum": 0, "maximum": 1920 },
+      "minItems": 2,
+      "maxItems": 2
+    }
+  }
+}

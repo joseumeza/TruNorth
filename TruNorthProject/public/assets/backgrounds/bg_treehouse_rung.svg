@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8fd0ff"/><stop offset="1" stop-color="#d9f4e4"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#sky)"/>
+  <circle cx="640" cy="120" r="220" fill="#57a84b" opacity="0.9"/>
+  <circle cx="1500" cy="150" r="260" fill="#4f9e45" opacity="0.9"/>
+  <rect x="820" y="0" width="120" height="1080" rx="26" fill="#7a5230"/>
+  <rect x="1160" y="0" width="120" height="1080" rx="26" fill="#7a5230"/>
+  <g fill="#c98d4b">
+    <rect x="800" y="160" width="500" height="46" rx="20"/>
+    <rect x="800" y="380" width="500" height="46" rx="20"/>
+    <rect x="800" y="600" width="500" height="46" rx="20"/>
+    <rect x="800" y="820" width="500" height="46" rx="20"/>
+  </g>
+  <ellipse cx="960" cy="1060" rx="900" ry="80" fill="#6cbf4e"/>
+  <ellipse cx="330" cy="300" rx="130" ry="45" fill="#ffffff" opacity="0.85"/>
+</svg>

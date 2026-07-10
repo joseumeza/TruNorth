@@ -1,0 +1,24 @@
+{
+  "id": "c1s1",
+  "chapterId": "ch1",
+  "order": 1,
+  "movementTier": "A",
+  "background": "bg_meadow_day",
+  "narration": "It is a sunny day in the meadow. Everyone is playing on the swings — except Milo, who sits alone under the big tree.",
+  "avatarStart": [420, 840],
+  "characters": [
+    { "assetRef": "char_milo", "id": "milo", "position": [1440, 800], "expression": "worried" },
+    { "assetRef": "char_companion_fox", "id": "companion", "position": [640, 860] }
+  ],
+  "triggers": [
+    { "id": "milo_encounter", "bounds": [1330, 660, 220, 220], "action": "startDecision", "target": "dp_leftout_swing" }
+  ],
+  "collectibles": [
+    { "id": "spark_c1_1", "assetRef": "collectible_spark", "position": [900, 920], "kind": "kindness_spark" }
+  ],
+  "decisionPoints": ["dp_leftout_swing"],
+  "version": "1.0.0",
+  "owner": "content-team",
+  "approvalState": "draft",
+  "lastSmeReviewDate": "2026-07-07"
+}

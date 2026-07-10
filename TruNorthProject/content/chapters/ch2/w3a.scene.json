@@ -1,0 +1,27 @@
+{
+  "id": "w3a",
+  "chapterId": "ch2",
+  "order": 3,
+  "movementTier": "B",
+  "background": "bg_clearing_day",
+  "narration": "Robin takes a shaky breath and puts one foot on the first rung. The worry cloud shrinks to a wisp. \"Okay… just the first step. Together.\"",
+  "avatarStart": [700, 860],
+  "characters": [
+    { "assetRef": "char_robin", "id": "robin", "position": [960, 780], "expression": "shaky_nod" },
+    { "assetRef": "char_companion_fox", "id": "companion", "position": [760, 860], "expression": "excited_glow" }
+  ],
+  "fx": [
+    { "assetRef": "fx_worry_cloud", "id": "worry_cloud", "position": [960, 540], "variant": "small" }
+  ],
+  "triggers": [
+    { "id": "to_ladder", "bounds": [1060, 620, 240, 320], "action": "goToScene", "target": "w4" }
+  ],
+  "collectibles": [
+    { "id": "spark_w3_1", "assetRef": "collectible_spark", "position": [500, 920], "kind": "kindness_spark", "gate": "strong_path" }
+  ],
+  "decisionPoints": [],
+  "version": "1.0.0",
+  "owner": "content-team",
+  "approvalState": "draft",
+  "lastSmeReviewDate": "2026-07-07"
+}

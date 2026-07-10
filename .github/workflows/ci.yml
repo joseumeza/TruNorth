@@ -1,0 +1,33 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+defaults:
+  run:
+    working-directory: TruNorthProject
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: npm
+          cache-dependency-path: TruNorthProject/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run build:manifest
+      - run: npm run validate:content
+      - run: npm run test:unit
+      - run: npm run test:red-team
+      - run: npm run build
+      - run: npm run audit:bundle
+      - name: e2e (offline demo golden path)
+        run: |
+          npx playwright install --with-deps chromium
+          npm run test:e2e

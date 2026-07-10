@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "trunorth/companion-response.schema.json",
+  "title": "TruNorth CompanionResponse",
+  "type": "object",
+  "required": ["scoreBand", "skill", "matchedCriterion", "confidence", "companionLine", "redirect", "safetyFlag"],
+  "additionalProperties": true,
+  "properties": {
+    "scoreBand": { "enum": ["strong", "partial", "poor"] },
+    "skill": { "enum": ["empathy", "calm", "courage", "self_worth", "adapting_to_change", "friendship_repair", "worry_brave"] },
+    "matchedCriterion": { "type": "string" },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "companionLine": { "type": "string", "minLength": 1, "maxLength": 360 },
+    "redirect": { "type": "boolean" },
+    "safetyFlag": { "enum": ["none", "pii", "profanity", "jailbreak", "distress", "off_topic", "unsafe_advice", "input_length"] },
+    "fallbackReason": { "type": "string" }
+  }
+}

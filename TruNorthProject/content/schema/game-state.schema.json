@@ -1,0 +1,110 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "trunorth/game-state.schema.json",
+  "title": "TruNorth GameState",
+  "type": "object",
+  "required": ["version", "profile", "progress", "meters", "companion", "emotionalResidue", "parentGate", "flags", "eventLog"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "const": 1 },
+    "profile": {
+      "type": "object",
+      "required": ["ageBand", "chapterId", "avatar", "companionName", "companionArchetype", "baselineStrength"],
+      "additionalProperties": false,
+      "properties": {
+        "childDisplayName": { "type": "string", "maxLength": 20 },
+        "ageBand": { "enum": ["5-7", "8-10", "11-15"] },
+        "chapterId": { "type": "string" },
+        "avatar": {
+          "type": "object",
+          "required": ["skinTone", "hair"],
+          "additionalProperties": false,
+          "properties": {
+            "skinTone": { "enum": ["tone_1", "tone_2", "tone_3", "tone_4", "tone_5"] },
+            "hair": { "enum": ["hair_curly", "hair_straight", "hair_braids", "hair_short", "hair_puffs"] }
+          }
+        },
+        "companionName": { "type": "string", "maxLength": 20 },
+        "companionArchetype": { "type": "string" },
+        "baselineStrength": { "type": "string" }
+      }
+    },
+    "progress": {
+      "type": "object",
+      "required": ["currentSceneId", "chaptersUnlocked", "chaptersCompleted", "browniePoints", "kindnessSparksFound"],
+      "additionalProperties": false,
+      "properties": {
+        "currentSceneId": { "type": "string" },
+        "chaptersUnlocked": { "type": "array", "items": { "type": "string" } },
+        "chaptersCompleted": { "type": "array", "items": { "type": "string" } },
+        "browniePoints": { "type": "integer", "minimum": 0 },
+        "kindnessSparksFound": { "type": "object", "additionalProperties": { "type": "array", "items": { "type": "string" } } }
+      }
+    },
+    "meters": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["fill", "level"],
+        "additionalProperties": false,
+        "properties": {
+          "fill": { "type": "number", "minimum": 0, "maximum": 1 },
+          "level": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "companion": {
+      "type": "object",
+      "required": ["level", "appearanceRef"],
+      "additionalProperties": false,
+      "properties": {
+        "level": { "enum": [1, 2, 3] },
+        "appearanceRef": { "type": "string" }
+      }
+    },
+    "emotionalResidue": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": { "enum": ["trusting", "neutral", "shaken"] }
+      }
+    },
+    "parentGate": {
+      "type": "object",
+      "required": ["lastPassedChapter"],
+      "additionalProperties": false,
+      "properties": {
+        "lastPassedChapter": { "anyOf": [{ "type": "string" }, { "type": "null" }] },
+        "pinHash": { "type": "string" }
+      }
+    },
+    "flags": {
+      "type": "object",
+      "required": ["demoMode", "lastSafetyFlag", "onboardingComplete"],
+      "additionalProperties": false,
+      "properties": {
+        "demoMode": { "type": "boolean" },
+        "lastSafetyFlag": {
+          "anyOf": [
+            { "enum": ["none", "pii", "profanity", "jailbreak", "distress", "off_topic", "unsafe_advice", "input_length"] },
+            { "type": "null" }
+          ]
+        },
+        "onboardingComplete": { "type": "boolean" }
+      }
+    },
+    "eventLog": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "required": ["ts", "type"],
+        "additionalProperties": true,
+        "properties": {
+          "ts": { "type": "number" },
+          "type": { "enum": ["scene_enter", "decision_resolved", "repair_completed", "collectible_found", "chapter_complete", "fallback_used", "safety_flag"] }
+        }
+      }
+    }
+  }
+}
