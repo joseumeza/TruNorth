@@ -7,6 +7,75 @@
 
 ---
 
+## Team roles & task board
+
+Each teammate has one active to-do. Tasks come from the current gaps in Section 3
+(⬜ / 🟨 items and pending work). Check a task off only when the matching Section 3
+entry is updated in the same change.
+
+### Ermoni — Backend (Supabase: character files + scripts/dialogs)
+
+- [ ] Stand up the Supabase project (Postgres + Auth + Storage, per spec §12 EXT stack
+  and ADR-003) and store the content in it:
+  - **Character SVG files** → a Supabase **Storage** bucket (e.g. `character-assets/`),
+    one file per character × expression variant; the asset manifest then points at the
+    bucket's CDN URLs instead of `public/assets/`.
+  - **Scripts & dialogs** → a Postgres table with JSONB lines (see example below),
+    mirroring the existing `content/` JSON so the scene schemas keep validating.
+  - Note: spec left "Supabase vs Neon" open in ADR-003 — starting this work decides it;
+    update ADR-003 status when the project is created.
+
+  Example dialog storage shape:
+
+  ```sql
+  create table dialogs (
+    id             text primary key,        -- 'ch2:w2:dp_robin_ladder'
+    chapter_id     text not null,           -- 'ch2'
+    scene_id       text not null,           -- 'w2'
+    speaker        text not null,           -- 'robin' | 'companion' | 'narration'
+    lines          jsonb not null,          -- ["Line one…", "Line two…"] in order
+    approval_state text not null default 'draft',
+    updated_at     timestamptz default now()
+  );
+  ```
+
+### Gabby — Backend (dialog content model, supporting Ermoni)
+
+- [ ] Support the Supabase work by owning **how and what the characters say**: define
+  the dialog/script data model (fields, speaker set, line ordering, `approval_state`
+  workflow), decide which existing `content/` scene and decision-point text migrates
+  into the `dialogs` table, and review Ermoni's rows for tone/consistency.
+
+### Daniel — Frontend (UI gameplay: grid collision + input & movement)
+
+- [ ] Own the full movement stack end to end: make all collision resolve through the
+  16×9 tile grid (`TileMap`) instead of character-vs-character AABB checks, **and**
+  ensure arrow keys and WASD reliably move the character (key mapping, held-key
+  polling, freeze/release, smooth axis-separated motion).
+- **Files owned:** `src/engine/TileMap.ts`, `src/engine/CollisionSystem.ts`,
+  `src/input/InputController.ts`, `src/engine/MovementController.ts`.
+
+### Jose — Frontend (deployment)
+
+- [ ] Deploy the app so users can play and test it: stand up a hosted environment
+  (the `api/` functions target the Vercel Node runtime), configure env vars from
+  `.env.example`, verify `api/health` and the companion proxy work in production,
+  and share the test URL (demo mode: `?demo=1`) with the team.
+
+### Vandy — Product management (keeping the project on track)
+
+- [ ] Get SME review of all chapter content — everything is still `approvalState: "draft"` (Section 3.12).
+
+### Ranya — Product management (keeping the project on track)
+
+- [ ] Fill in SME/counsel contacts in `docs/incident-response.md` and source SME rubrics for the empty `content/rubrics/`.
+
+### Madhu — Product management (keeping the project on track)
+
+- [ ] Track milestones and cross-team dependencies (e.g. frontend store wiring is blocked by the backend progress endpoints); keep this board and `product.md` in sync each PR.
+
+---
+
 ## 0. How to use and maintain this file (read before editing)
 
 These rules exist so `product.md` stays trustworthy and consistent across every pull request.
