@@ -40,6 +40,26 @@ diagrams, or a deep walkthrough, do **not** bloat `product.md`. Instead:
 - `🟨 Partial` — some functionality exists; note what's missing.
 - `✅ Implemented` — built and working; describe methods/functionality.
 
+### In-work labeling (🔧 tags)
+
+`product.md` has a **"Team roles & task board"** section (one header + one active task
+per teammate) near the top. Areas someone is actively working on are tagged
+`🔧 <name>` in **both** places:
+
+- **Section 2 (folder tree)** — inline on the affected path lines.
+- **Section 3 (component entries)** — a short blockquote under the affected subsystem
+  naming who is working there and on what.
+
+Rules:
+
+1. 🔧 tags supplement the status legend, never replace it (`✅ 🔧 Daniel` is valid).
+2. Keep the tags and the task board in sync: when a teammate's task is added, changed,
+   or completed, update the matching 🔧 tags in Sections 2–3 in the same change set.
+3. Before making changes in a 🔧-tagged area, flag the tag to the user so they can
+   coordinate with the owner — do not silently edit another teammate's active area.
+4. Tags mark **code/asset areas only**; research or process tasks (PM work) live on
+   the task board without file tags.
+
 ### Source-of-truth precedence
 
 - For **"what is built"** → `product.md` wins.

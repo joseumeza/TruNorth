@@ -13,20 +13,22 @@ Each teammate has one active to-do. Tasks come from the current gaps in Section 
 (⬜ / 🟨 items and pending work). Check a task off only when the matching Section 3
 entry is updated in the same change.
 
-### Ermoni — Backend (Supabase: character files + scripts/dialogs)
+> **🔧 = actively being worked on.** The folder tree (Section 2) and component entries
+> (Section 3) are tagged `🔧 <name>` wherever someone on this board is currently
+> working. Check for a 🔧 tag before touching an area — coordinate with the owner first.
 
-- [ ] Stand up Supabase (in spec as the EXT stack option — §12, ADR-003) and use it to
-  store our content: the character SVG files in file storage, and the scripts/dialogs
-  in the database, organized so each line of dialog is tied to its chapter, scene, and
-  speaker and keeps its draft/approved review status. Starting this decides the open
-  "Supabase vs Neon" question in ADR-003 — update that ADR when the project exists.
+### Ermoni — Backend (Supabase, first iteration: level images)
 
-### Gabby — Backend (dialog content model, supporting Ermoni)
+- [ ] Get Supabase connected to the app and storing the SVG images for each level, so
+  the app can pull the right images per level when needed — without breaking the
+  fully-offline demo path. Design the level SVGs together with Gabby, based on the
+  script provided by Vandy.
 
-- [ ] Support the Supabase work by owning **how and what the characters say**: define
-  the dialog/script data model (fields, speaker set, line ordering, `approval_state`
-  workflow), decide which existing `content/` scene and decision-point text migrates
-  into the `dialogs` table, and review Ermoni's rows for tone/consistency.
+### Gabby — Backend (Supabase level images, with Ermoni)
+
+- [ ] Design the SVG images for each level based on the script provided by Vandy, and
+  work with Ermoni to get them stored in Supabase and pulled correctly by the app
+  per level.
 
 ### Daniel — Frontend (UI gameplay: grid collision + input & movement)
 
@@ -44,17 +46,25 @@ entry is updated in the same change.
   `.env.example`, verify `api/health` and the companion proxy work in production,
   and share the test URL (demo mode: `?demo=1`) with the team.
 
-### Vandy — Product management (keeping the project on track)
+### Vandy — Product management (research & game vision)
 
-- [ ] Get SME review of all chapter content — everything is still `approvalState: "draft"` (Section 3.12).
+- [ ] Research how existing SEL products — especially **GoZen!** — teach hard emotional
+  skills to kids, and turn the findings into a clearer vision of what our 2D game
+  should be like. This vision feeds the script Vandy provides to Ermoni and Gabby
+  for the level SVGs.
 
-### Ranya — Product management (keeping the project on track)
+### Ranya — Product management (research & testing criteria)
 
-- [ ] Fill in SME/counsel contacts in `docs/incident-response.md` and source SME rubrics for the empty `content/rubrics/`.
+- [ ] Research (alongside Vandy) how programs like **GoZen!** teach emotional skills
+  through simple, approachable formats, and translate the findings into what to look
+  for when testing — a concrete idea of what "good" looks like when playing our very
+  basic 2D game.
 
-### Madhu — Product management (keeping the project on track)
+### Madhu — Product management (PR support & spec alignment)
 
-- [ ] Track milestones and cross-team dependencies (e.g. frontend store wiring is blocked by the backend progress endpoints); keep this board and `product.md` in sync each PR.
+- [ ] Provide continuous support across the team: help review and shepherd pull
+  requests, and make sure the work stays headed the right way based on our specs
+  (`TruNorthTechnicalSpecification.md` for intent, `product.md` for what's built).
 
 ---
 
@@ -116,7 +126,7 @@ These rules exist so `product.md` stays trustworthy and consistent across every 
 | Overall implementation status | **✅ MVP playable end-to-end.** Two chapters (Ch.1 meadow + Ch.2 showcase golden path W1→W4) as **Pokémon-style 3/4 top-down single-screen rooms** (tile collision, 4-direction avatar, y-sorted depth), scene engine, five-layer companion safety pipeline, offline demo mode, local persistence, onboarding, parent gate + trust screen, tests (57 unit/integration + 19 red-team + e2e golden path) all green. Art is **placeholder SVG** (not the frozen style). EXT items (remote store, parent dashboard, voice, enterprise) not built. |
 | Toolchain | Node 22 (`.nvmrc`), Vite 6, TypeScript 5, Vitest 3, Playwright, Ajv, tsx — see ADR-001 for the Vite 6-vs-8 deviation |
 | Quick test | `cd TruNorthProject && npm install && npm run demo` → http://localhost:4173/?demo=1 |
-| Last updated | 2026-07-09 |
+| Last updated | 2026-07-12 |
 
 ---
 
@@ -124,13 +134,13 @@ These rules exist so `product.md` stays trustworthy and consistent across every 
 
 ```
 TruNorthProject/
-├── api/                       # Serverless functions (Vercel Node runtime)
+├── api/                       # Serverless functions (Vercel Node runtime) 🔧 Jose (deployment)
 │   ├── _lib/                  # ✅ Shared companion pipeline (filters, prompt, validate, fallbacks, pipeline)
 │   ├── auth/                  # ⬜ [EXT] parent auth (empty)
 │   ├── companion/route.ts     # ✅ POST /api/companion proxy
 │   ├── health/route.ts        # ✅ Health check
 │   └── progress/[childId].ts  # 🟨 [EXT] stub returning 501
-├── assets-src/                # ✅ manifest.yaml, provenance-ledger.csv, art-style-guide.md (placeholder era)
+├── assets-src/                # ✅ manifest.yaml, provenance-ledger.csv, art-style-guide.md 🔧 Ermoni+Gabby (level SVGs)
 ├── content/
 │   ├── chapters/ch1/          # ✅ chapter.json, c1s1/c1s2 scenes, decision-points.json
 │   ├── chapters/ch2/          # ✅ chapter.json, w1–w4 scenes (golden path), decision-points.json
@@ -143,7 +153,7 @@ TruNorthProject/
 │   ├── privacy/data-classification.md  # ✅
 │   ├── demo-runbook.md        # ✅
 │   └── incident-response.md   # ✅ (skeleton; SME/counsel contacts TBD)
-├── public/assets/             # ✅ Placeholder SVGs (backgrounds/characters/fx/ui) + generated manifest.json
+├── public/assets/             # ✅ Placeholder SVGs + generated manifest.json 🔧 Ermoni+Gabby (Supabase pull)
 ├── scripts/                   # ✅ validate-content, build-asset-manifest, red-team-suite, audit-bundle-size
 ├── src/
 │   ├── main.ts                # ✅ Boot + rAF game loop
@@ -153,7 +163,8 @@ TruNorthProject/
 │   ├── content/               # ✅ ContentLibrary (glob-imported content), fallbackLines
 │   ├── engine/                # ✅ SceneEngine, SceneGraph, DecisionResolver, MovementController,
 │   │                          #    CollisionSystem, TileMap, EmotionalResidue
-│   ├── input/InputController.ts   # ✅ Keyboard + freeze/release + pause
+│   │                          #    🔧 Daniel (TileMap, CollisionSystem, MovementController)
+│   ├── input/InputController.ts   # ✅ Keyboard + freeze/release + pause 🔧 Daniel
 │   ├── render/                # ✅ Viewport, SceneRenderer, BubbleManager, ParticleSystem, AvatarSprite
 │   ├── safety/OutputSanitizer.ts  # ✅ Client-side output sanitization
 │   ├── store/                 # ✅ LocalProgressStore, DemoProgressStore, GameStateFactory
@@ -186,6 +197,9 @@ and the rAF loop. Boot walkthrough: [engine-runtime.md](./TruNorthContextFiles/e
 ✅ Implemented — full lifecycle per spec §5.3; **scenes are Pokémon-style 3/4 top-down
 single-screen rooms** (no scrolling); deep-dive in
 [engine-runtime.md](./TruNorthContextFiles/engine-runtime.md).
+
+> 🔧 **Daniel is actively working here** — owns `TileMap`, `CollisionSystem`, and
+> `MovementController` (grid-based collision + movement). Coordinate before editing these.
 - `SceneEngine` — orchestrator: scene load/transition (builds the room `TileMap` per scene),
   Tier A click zones / Tier B collision, decision → companion → consequence flow,
   repairs (walk-back + 3 gestures), fx mapping, meter juice, W4 3-tap climb (back pose,
@@ -217,6 +231,9 @@ single-screen rooms** (no scrolling); deep-dive in
 ### 3.4 Input (`src/input/InputController.ts`)
 ✅ Implemented. Key mapping (WASD/arrows) polled by the loop; ignores form fields;
 `freeze()`/`release()` for §5.4 input freeze; Escape → pause callback.
+
+> 🔧 **Daniel is actively working here** — WASD/arrow-key movement reliability
+> (part of his movement-stack task). Coordinate before editing.
 
 ### 3.5 UI & parent surfaces (`src/ui/`)
 ✅ Implemented.
@@ -268,6 +285,9 @@ manifest, telemetry) + `Facing` (4-direction avatar facing), `UI_TOKENS` (age-ba
 ### 3.11 Serverless API (`api/`)
 ✅ Implemented (live path) — deep-dive in
 [safety-companion-pipeline.md](./TruNorthContextFiles/safety-companion-pipeline.md).
+
+> 🔧 **Jose is actively working here** — deploying the app (hosted environment, env
+> vars, production health + companion proxy) so users can play and test it.
 - `_lib/pipeline.ts` — `runCompanionPipeline()`: the five-layer safety stack (input filter →
   scoped prompt → Claude call w/ 8 s timeout + 1 retry → strict validation + 0.55
   confidence floor → output filter), authored-band authority for choices, fallback
@@ -302,6 +322,10 @@ ledger rows for all 12 assets), but the art itself is **hand-authored placeholde
 not the frozen "clean cartoon" style (see `assets-src/art-style-guide.md`). Backgrounds
 are drawn as **3/4 top-down rooms aligned to each scene's 16×9 tile grid** (hedge walls
 with front faces, door gaps on walkable exit tiles). Audio is synthesized, no audio files.
+
+> 🔧 **Ermoni & Gabby are actively working here** — designing the per-level SVG images
+> (from Vandy's script) and moving their storage/delivery to Supabase. Coordinate
+> before adding or changing image assets.
 
 ### 3.14 Build & tooling scripts (`scripts/`)
 ✅ Implemented.
