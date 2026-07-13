@@ -15,29 +15,11 @@ entry is updated in the same change.
 
 ### Ermoni — Backend (Supabase: character files + scripts/dialogs)
 
-- [ ] Stand up the Supabase project (Postgres + Auth + Storage, per spec §12 EXT stack
-  and ADR-003) and store the content in it:
-  - **Character SVG files** → a Supabase **Storage** bucket (e.g. `character-assets/`),
-    one file per character × expression variant; the asset manifest then points at the
-    bucket's CDN URLs instead of `public/assets/`.
-  - **Scripts & dialogs** → a Postgres table with JSONB lines (see example below),
-    mirroring the existing `content/` JSON so the scene schemas keep validating.
-  - Note: spec left "Supabase vs Neon" open in ADR-003 — starting this work decides it;
-    update ADR-003 status when the project is created.
-
-  Example dialog storage shape:
-
-  ```sql
-  create table dialogs (
-    id             text primary key,        -- 'ch2:w2:dp_robin_ladder'
-    chapter_id     text not null,           -- 'ch2'
-    scene_id       text not null,           -- 'w2'
-    speaker        text not null,           -- 'robin' | 'companion' | 'narration'
-    lines          jsonb not null,          -- ["Line one…", "Line two…"] in order
-    approval_state text not null default 'draft',
-    updated_at     timestamptz default now()
-  );
-  ```
+- [ ] Stand up Supabase (in spec as the EXT stack option — §12, ADR-003) and use it to
+  store our content: the character SVG files in file storage, and the scripts/dialogs
+  in the database, organized so each line of dialog is tied to its chapter, scene, and
+  speaker and keeps its draft/approved review status. Starting this decides the open
+  "Supabase vs Neon" question in ADR-003 — update that ADR when the project exists.
 
 ### Gabby — Backend (dialog content model, supporting Ermoni)
 
